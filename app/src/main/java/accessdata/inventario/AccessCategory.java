@@ -8,6 +8,8 @@ import entidad.constantes.sqlconstant.SqlConstant;
 import entidad.entitys.inventario.Category;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
+
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,41 +24,39 @@ import java.util.Objects;
 @Log4j2
 public class AccessCategory {
     private final String[] NAME_FIELDS = {"Idcategory", "name_category", "description", "date_create", "date_update"};
-    String result = "Error: ";
     String abbreviation = "cat";
 
     public String callSaveCategory(Category category) throws ParseException {
-        try (Connection conn = ConfigurationDb.getConnection()) {
+        String result = "";
+        try (Connection conn = ConfigurationDb.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryCreate(SqlConstant.CATEGORY)
+                + NAME_FIELDS[1].concat(Constants.COMMA)
+                + NAME_FIELDS[2].concat(Constants.COMMA)
+                + NAME_FIELDS[3].concat(Constants.COMMA)
+                + NAME_FIELDS[4]
+                + ") VALUES (?, ?, ?, ?)")) {
 
-            String sql = UtilsSql.queryCreate(SqlConstant.CATEGORY)
-                    + NAME_FIELDS[1].concat(Constants.COMMA)
-                    + NAME_FIELDS[2].concat(Constants.COMMA)
-                    + NAME_FIELDS[3].concat(Constants.COMMA)
-                    + NAME_FIELDS[4].concat(Constants.COMMA)
-                    + ") VALUES (?, ?, ?, ?)";
+            stmt.setString(1, category.getName());
+            stmt.setString(2, category.getDescription());
+            stmt.setTimestamp(3, Timestamp.valueOf(UtilsDate.getDateNow()));
+            stmt.setTimestamp(4, Timestamp.valueOf(UtilsDate.getDateNow()));
 
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, category.getName());
-                stmt.setString(2, category.getDescription());
-                stmt.setTimestamp(3, Timestamp.valueOf(UtilsDate.getDateNow()));
-                stmt.setTimestamp(4, Timestamp.valueOf(UtilsDate.getDateNow()));
-
+            if (!conn.isClosed()) {
                 if (stmt.executeUpdate() > Constants.ZERO) {
-                    log.info(ConstantLogger.LOG_SUCCESS_QUERY_INSERT, SqlConstant.CATEGORY);
+                    log.info(ConstantLogger.LOG_SUCCESS_QUERY_INSERT);
                     result = SqlConstant.SUCCESS_PROCESS;
                 } else {
-                    log.info(ConstantLogger.LOG_ERROR_QUERY_INSERT, SqlConstant.CATEGORY);
+                    log.info(ConstantLogger.LOG_ERROR_QUERY_INSERT);
                     result = SqlConstant.ERROR_PROCESS;
                 }
-                stmt.close();
-                ConfigurationDb.closeConnection();
-
-            } catch (SQLException ex) {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_INSERT, SqlConstant.CATEGORY);
-                result = result.concat(ex.getMessage());
+            } else {
+                result = SqlConstant.CLOSED_CONNECTION;
             }
+            stmt.close();
+            ConfigurationDb.closeConnection();
+
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_CONNECTION);
+            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
             result = result.concat(e.getMessage());
         }
 
@@ -64,67 +64,56 @@ public class AccessCategory {
     }
 
     public String callUpdateCategory(Category category) {
-        try (Connection conn = ConfigurationDb.getConnection()) {
+        String result = "";
+        try (Connection conn = ConfigurationDb.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryUpdate(SqlConstant.CATEGORY, abbreviation)
+                 + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE)
+                 + String.format(SqlConstant.UPDATE_WHERE,
+                     abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
 
-            String sql = UtilsSql.queryUpdate(SqlConstant.CATEGORY, abbreviation)
-                    + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                    + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                    + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE)
-                    + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE);
+            stmt.setString(1, category.getName());
+            stmt.setString(2, category.getDescription());
+            stmt.setTimestamp(3, Timestamp.valueOf(UtilsDate.getDateNow()));
+            stmt.setInt(4, category.getIdCategory());
 
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, category.getName());
-                stmt.setString(2, category.getDescription());
-                stmt.setTimestamp(3, Timestamp.valueOf(UtilsDate.getDateNow()));
-                stmt.setInt(4, category.getIdCategory());
-
-                if (stmt.executeUpdate() > Constants.ZERO) {
-                    log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.CATEGORY);
-                    result = SqlConstant.SUCCESS_PROCESS;
-                } else {
-                    log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, SqlConstant.CATEGORY);
-                    result = SqlConstant.ERROR_PROCESS;
-                }
-                stmt.close();
-                ConfigurationDb.closeConnection();
-
-            } catch (SQLException ex) {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, ex.getMessage());
-                result = result.concat(ex.getMessage());
+            if (stmt.executeUpdate() > Constants.ZERO) {
+                log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.CATEGORY);
+                result = SqlConstant.SUCCESS_PROCESS;
+            } else {
+                log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, SqlConstant.CATEGORY);
+                result = SqlConstant.ERROR_PROCESS;
             }
+            stmt.close();
+            ConfigurationDb.closeConnection();
+
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_CONNECTION);
+            log.info(ConstantLogger.LOG_ERROR_SQL, e.getMessage());
             result = result.concat(e.getMessage());
         }
-
         return result;
     }
 
     public String callDeleteCategory(Category category) {
-        try (Connection conn = ConfigurationDb.getConnection()) {
+        String result = Constants.EMPTY;
+        try (Connection conn = ConfigurationDb.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.CATEGORY, abbreviation)
+                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
 
-            String sql = UtilsSql.queryDetele(SqlConstant.CATEGORY, abbreviation)
-                    + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE);
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, category.getIdCategory());
 
                 if (stmt.executeUpdate() > Constants.ZERO) {
                     log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE, SqlConstant.CATEGORY);
                     result = SqlConstant.SUCCESS_PROCESS;
                 } else {
-                    log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, SqlConstant.CATEGORY);
                     result = SqlConstant.ERROR_PROCESS;
                 }
                 stmt.close();
                 ConfigurationDb.closeConnection();
 
-            } catch (SQLException ex) {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, ex.getMessage());
-                result = result.concat(ex.getMessage());
-            }
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_CONNECTION);
+            log.info(ConstantLogger.LOG_ERROR_SQL, e.getMessage());
             result = result.concat(e.getMessage());
         }
 
@@ -133,7 +122,7 @@ public class AccessCategory {
 
     public Category callFindCategory(Category category) throws ParseException {
         Category categoryFind = null;
-
+        String result = Constants.EMPTY;
         try (Connection conn = ConfigurationDb.getConnection()) {
 
             String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
@@ -176,23 +165,16 @@ public class AccessCategory {
         return categoryFind;
     }
 
-    public List<Category> callFindCategory(Category category, int page, int size) throws ParseException {
+    public List<Category> callAllCategory() throws ParseException {
         List<Category> categories = new ArrayList<>();
+        String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
 
-        try (Connection conn = ConfigurationDb.getConnection()) {
-
-            String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
-
-            String sql = UtilsSql.queryFindById(namesFields, SqlConstant.CATEGORY, abbreviation)
-                    + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE)
-                    + " LIMIT ? OFFSET ?";
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, category.getIdCategory());
-                stmt.setInt(2, size);
-                stmt.setInt(3, (page - 1) * size);
+        try (Connection conn = ConfigurationDb.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     UtilsSql.queryFindAll(namesFields, SqlConstant.CATEGORY))) {
 
                 ResultSet rs = stmt.executeQuery();
+
                 while (rs.next()) {
                     Category categoryFind = Category.builder()
                             .idCategory(rs.getInt(1))
@@ -205,11 +187,10 @@ public class AccessCategory {
                 }
                 stmt.close();
                 rs.close();
-            } catch (SQLException ex) {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_FIND_ID, ex.getMessage());
-            }
+
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_CONNECTION);
+            log.info(ConstantLogger.LOG_ERROR_SQL, e.getMessage());
+            JOptionPane.showMessageDialog(null, (ConstantLogger.LOG_ERROR_SQL + e.getMessage()));
         }
         return categories;
     }

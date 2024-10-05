@@ -29,8 +29,8 @@ public class ConfigurationDb {
         }
     }
 
-    public static Connection getConnection() {
-        if (Objects.isNull(connection)) {
+    public static Connection getConnection() throws SQLException {
+        if (Objects.isNull(connection) || connection.isClosed()) {
             initConnection();
         }
         return connection;

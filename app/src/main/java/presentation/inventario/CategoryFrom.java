@@ -1,15 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package presentation.inventario;
+
+import entidad.entitys.inventario.Category;
+import lombok.extern.log4j.Log4j2;
+import negocio.inventario.LogicalCategory;
+import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.util.List;
 
 /**
  *
  * @author ivanl
  */
+@Log4j2
 public class CategoryFrom extends javax.swing.JFrame {
 
+    private final LogicalCategory logicalCategory = new LogicalCategory();
+    private Category accionCategory = Category.builder().build();
     /**
      * Creates new form CategoryFrom
      */
@@ -34,8 +46,19 @@ public class CategoryFrom extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableDataCategory = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        addComponentListener(new ComponentAdapter() {
+            public void componentShown(ComponentEvent evt) {
+                try {
+                    formComponentShown();
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         jLabel1.setText("Nombre");
 
@@ -44,13 +67,19 @@ public class CategoryFrom extends javax.swing.JFrame {
         textDescriptionCategory.setColumns(3);
 
         btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    btnAceptarActionPerformed(evt);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
-        tableDataCategory.setModel(new javax.swing.table.DefaultTableModel(
+        tableDataCategory.setModel(new DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "id", "Name", "Descripcion", "Creacion", "Moficacion"
@@ -71,18 +100,46 @@ public class CategoryFrom extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableDataCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDataCategoryMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableDataCategory);
         if (tableDataCategory.getColumnModel().getColumnCount() > 0) {
             tableDataCategory.getColumnModel().getColumn(0).setMinWidth(1);
             tableDataCategory.getColumnModel().getColumn(0).setMaxWidth(1);
             tableDataCategory.getColumnModel().getColumn(1).setResizable(false);
             tableDataCategory.getColumnModel().getColumn(2).setResizable(false);
-            tableDataCategory.getColumnModel().getColumn(3).setResizable(false);
-            tableDataCategory.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel3.setText("GESTIONAR CATEGORIA DE PRODUCTOS");
+
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    btnActualizarActionPerformed(evt);
+                } catch (ParseException e) {
+                    JOptionPane
+                       .showMessageDialog(null, "Ups!!! Ocurrio un error: " + e.getMessage());
+                }
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.setToolTipText("");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    btnEliminarActionPerformed(evt);
+                } catch (ParseException e) {
+                    JOptionPane
+                       .showMessageDialog(null, "Ups!!! Ocurrio un error: " + e.getMessage());
+                }
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -90,44 +147,103 @@ public class CategoryFrom extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAceptar)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel2)
-                        .addComponent(jLabel1)
-                        .addComponent(textNameCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                        .addComponent(textDescriptionCategory)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(textNameCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                    .addComponent(textDescriptionCategory)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAceptar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnActualizar)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEliminar))
                 .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
-                .addGap(103, 103, 103))
+                .addGap(165, 165, 165))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textNameCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textDescriptionCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAceptar))
+                        .addComponent(textDescriptionCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAceptar)
+                    .addComponent(btnActualizar)
+                    .addComponent(btnEliminar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tableDataCategoryMouseClicked(MouseEvent evt) {//GEN-FIRST:event_tableDataCategoryMouseClicked
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableDataCategory.getModel();
+        int indexSelect = tableDataCategory.getSelectedRow();
+
+        textNameCategory.setText(defaultTableModel.getValueAt(indexSelect, 1).toString());
+        textDescriptionCategory.setText(defaultTableModel.getValueAt(indexSelect, 2).toString());
+        accionCategory.setIdCategory(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 0).toString()));
+        accionCategory.setName(defaultTableModel.getValueAt(indexSelect, 1).toString());
+        accionCategory.setDescription(defaultTableModel.getValueAt(indexSelect, 2).toString());
+    }//GEN-LAST:event_tableDataCategoryMouseClicked
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnActualizarActionPerformed
+        log.info("Actualizando categoria con ID: {}", accionCategory.getIdCategory());
+        String result = logicalCategory.updateCategory(accionCategory);
+        formComponentShown();
+        JOptionPane.showMessageDialog(null, "Actualizacion: " + result);
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnEliminarActionPerformed
+        log.info("Eliminando categoria con ID: {}", accionCategory.getIdCategory());
+        String result = logicalCategory.deleteCategory(accionCategory);
+        formComponentShown();
+        JOptionPane.showMessageDialog(null, "Eliminacion: " + result);
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnAceptarActionPerformed(ActionEvent evt) throws ParseException {
+        Category category = Category.builder()
+                .name(textNameCategory.getText())
+                .description(textDescriptionCategory.getText())
+                .build();
+
+        String result = logicalCategory.addCategory(category);
+        formComponentShown();
+        JOptionPane.showMessageDialog(null, result);
+    }
+
+    private void formComponentShown() throws ParseException {
+        List<Category> categoryList = logicalCategory.categoryList();
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableDataCategory.getModel();
+        defaultTableModel.setRowCount(0);
+
+        for (Category category : categoryList) {
+            defaultTableModel.addRow(new Object[] {
+                category.getIdCategory(),
+                category.getName(),
+                category.getDescription(),
+                category.getDateCreate(),
+                category.getDateUpdate()
+            });
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -166,6 +282,8 @@ public class CategoryFrom extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

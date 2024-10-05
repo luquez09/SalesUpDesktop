@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SqlConstant {
 
-    public static final String INSERT_INTO = "INSERT INTO \"schComercio\".%s(";
+    public static final String INSERT_INTO = "INSERT INTO \"schComercio\".%s (";
     public static final String UPDATE_INTO = "UPDATE \"schComercio\".%s %s SET ";
     public static final String DELETE_INTO = "DELETE FROM \"schComercio\".%s %s";
     public static final String FIND_INTO = "SELECT %s FROM \"schComercio\".%s %s";
+    public static final String FIND_ALL = "SELECT %s FROM \"schComercio\".%s";
 
     public static final String UPDATE_VALUE = "= ?";
     public static final String UPDATE_WHERE = " WHERE %s.%s %s";
@@ -38,7 +39,15 @@ public class SqlConstant {
 
 
     //Constants general
-    public static final String SUCCESS_PROCESS = "SUCCESS_PROCESS";
-    public static final String ERROR_PROCESS = "ERROR_PROCESS";
+    public static final String SUCCESS_PROCESS = "Registro guardado, con exito.";
+    public static final String ERROR_PROCESS = "Error al realizar la operacion.\n";
+
+    public static final String SUCCESS_DELETE = "Registro Eliminado, con exito.";
+    public static final String ERROR_DELETE = "Error, no fue posible eliminar.\n";
+
+    public static final String SUCCESS_UPDATE = "Registro Actualizado, con exito.";
+    public static final String ERROR_UPDATE = "Error no fue posible actualizar.\n";
+
+    public static final String CLOSED_CONNECTION = "La conexion con la base de datos no fue posible.";
 
 }

@@ -21,4 +21,8 @@ public class UtilsSql {
     public static String queryFindById(String namesFields, String table, String abbreviation) {
         return String.format(SqlConstant.FIND_INTO, namesFields, table, abbreviation);
     }
+
+    public static String queryFindAll(String namesFields, String table) {
+        return String.format(SqlConstant.FIND_ALL, namesFields, table);
+    }
 }
