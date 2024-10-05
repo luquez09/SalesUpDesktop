@@ -89,7 +89,7 @@ public class AccessCategory {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_SQL, e.getMessage());
+            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
             result = result.concat(e.getMessage());
         }
         return result;
@@ -113,7 +113,7 @@ public class AccessCategory {
                 ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_SQL, e.getMessage());
+            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
             result = result.concat(e.getMessage());
         }
 
@@ -166,32 +166,32 @@ public class AccessCategory {
     }
 
     public List<Category> callAllCategory() throws ParseException {
-        List<Category> categories = new ArrayList<>();
+        List<Category> categoryList = new ArrayList<>();
         String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
 
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                      UtilsSql.queryFindAll(namesFields, SqlConstant.CATEGORY))) {
 
-                ResultSet rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
-                while (rs.next()) {
-                    Category categoryFind = Category.builder()
-                            .idCategory(rs.getInt(1))
-                            .name(rs.getString(2))
-                            .description(rs.getString(3))
-                            .dateCreate(rs.getObject(NAME_FIELDS[3], LocalDateTime.class))
-                            .dateUpdate(rs.getObject(NAME_FIELDS[4], LocalDateTime.class))
-                            .build();
-                    categories.add(categoryFind);
-                }
-                stmt.close();
-                rs.close();
-
+            while (rs.next()) {
+                Category categoryFind = Category.builder()
+                    .idCategory(rs.getInt(1))
+                    .name(rs.getString(2))
+                    .description(rs.getString(3))
+                    .dateCreate(rs.getObject(NAME_FIELDS[3], LocalDateTime.class))
+                    .dateUpdate(rs.getObject(NAME_FIELDS[4], LocalDateTime.class))
+                    .build();
+                categoryList.add(categoryFind);
+            }
+            stmt.close();
+            rs.close();
+            ConfigurationDb.closeConnection();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_SQL, e.getMessage());
-            JOptionPane.showMessageDialog(null, (ConstantLogger.LOG_ERROR_SQL + e.getMessage()));
+            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            JOptionPane.showMessageDialog(null, (Constants.ERROR_SQL + e.getMessage()));
         }
-        return categories;
+        return categoryList;
     }
 }

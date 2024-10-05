@@ -9,6 +9,8 @@ import entidad.entitys.inventario.Store;
 import entidad.entitys.inventario.Store;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
+
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -92,16 +94,17 @@ public class AccessStorage {
     public String callDeleteStore(Store store) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     UtilsSql.queryDetele(SqlConstant.STORAGE, abbreviation)
-                             + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+             UtilsSql.queryDetele(SqlConstant.STORAGE, abbreviation)
+                     + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0],
+                     SqlConstant.UPDATE_VALUE))) {
 
             stmt.setInt(1, store.getIdStore());
 
             if (stmt.executeUpdate() > Constants.ZERO) {
-                log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE, SqlConstant.STORAGE);
+                log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE);
                 result = SqlConstant.SUCCESS_PROCESS;
             } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, Constants.ONE_NEG);
+                log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE);
                 result = SqlConstant.ERROR_PROCESS;
             }
             stmt.close();
@@ -115,56 +118,12 @@ public class AccessStorage {
         return result;
     }
 
-    public Store callFindStore(Store store) throws ParseException {
-        Store dtoStore = null;
-        String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
-
-        try (Connection conn = ConfigurationDb.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     UtilsSql.queryFindById(namesFields, SqlConstant.STORAGE, abbreviation)
-                             + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
-
-            stmt.setInt(1, store.getIdStore());
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                dtoStore = Store.builder()
-                        .idStore(rs.getInt(1))
-                        .name(rs.getString(2))
-                        .description(rs.getString(3))
-                        .ubication(rs.getString(4))
-                        .build();
-            }
-
-            rs.close();
-            stmt.close();
-            ConfigurationDb.closeConnection();
-
-            if (Objects.isNull(dtoStore)) {
-                log.error(ConstantLogger.LOG_ERROR_FIND_NOT_FOUND);
-            } else {
-                log.error(ConstantLogger.LOG_SUCCESS_QUERY_FIND_ID, dtoStore.getIdStore());
-            }
-        } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            result = result.concat(e.getMessage());
-        }
-
-        return dtoStore;
-    }
-
-    public List<Store> callFindStore(Store store, int page, int size) throws ParseException {
+    public List<Store> callFindStore() throws ParseException {
         List<Store> storeList = new ArrayList<>();
         String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
 
         try (Connection conn = ConfigurationDb.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryFindById(namesFields, SqlConstant.PRODUCT, abbreviation)
-                     + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE)
-                     + " LIMIT ? OFFSET ?")) {
-
-            stmt.setInt(1, store.getIdStore());
-            stmt.setInt(2, size);
-            stmt.setInt(3, (page - 1) * size);
+             PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryFindAll(namesFields, SqlConstant.STORAGE))) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -178,8 +137,10 @@ public class AccessStorage {
             }
             stmt.close();
             rs.close();
+            ConfigurationDb.closeConnection();
         } catch (SQLException e) {
             log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
         }
         return storeList;
     }

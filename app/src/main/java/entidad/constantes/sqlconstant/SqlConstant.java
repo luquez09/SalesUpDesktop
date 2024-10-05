@@ -39,7 +39,7 @@ public class SqlConstant {
 
 
     //Constants general
-    public static final String SUCCESS_PROCESS = "Registro guardado, con exito.";
+    public static final String SUCCESS_PROCESS = "Accion procesada, con exito.";
     public static final String ERROR_PROCESS = "Error al realizar la operacion.\n";
 
     public static final String SUCCESS_DELETE = "Registro Eliminado, con exito.";

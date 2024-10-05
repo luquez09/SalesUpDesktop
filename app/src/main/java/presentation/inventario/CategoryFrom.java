@@ -49,13 +49,13 @@ public class CategoryFrom extends javax.swing.JFrame {
         btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        addComponentListener(new ComponentAdapter() {
-            public void componentShown(ComponentEvent evt) {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
                 try {
                     formComponentShown();
                 } catch (ParseException e) {
-                    throw new RuntimeException(e);
+                    JOptionPane.showMessageDialog(null, "Ups!! Ocurrio un error: " + e.getMessage());
                 }
             }
         });
@@ -72,12 +72,12 @@ public class CategoryFrom extends javax.swing.JFrame {
                 try {
                     btnAceptarActionPerformed(evt);
                 } catch (ParseException e) {
-                    throw new RuntimeException(e);
+                    JOptionPane.showMessageDialog(null, "Ups!! Ocurrio un error: " + e.getMessage());
                 }
             }
         });
 
-        tableDataCategory.setModel(new DefaultTableModel(
+        tableDataCategory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -114,6 +114,7 @@ public class CategoryFrom extends javax.swing.JFrame {
         }
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("GESTIONAR CATEGORIA DE PRODUCTOS");
 
         btnActualizar.setText("Actualizar");
@@ -122,8 +123,7 @@ public class CategoryFrom extends javax.swing.JFrame {
                 try {
                     btnActualizarActionPerformed(evt);
                 } catch (ParseException e) {
-                    JOptionPane
-                       .showMessageDialog(null, "Ups!!! Ocurrio un error: " + e.getMessage());
+                    JOptionPane.showMessageDialog(null, "Ups!! Ocurrio un error: " + e.getMessage());
                 }
             }
         });
@@ -135,8 +135,7 @@ public class CategoryFrom extends javax.swing.JFrame {
                 try {
                     btnEliminarActionPerformed(evt);
                 } catch (ParseException e) {
-                    JOptionPane
-                       .showMessageDialog(null, "Ups!!! Ocurrio un error: " + e.getMessage());
+                    JOptionPane.showMessageDialog(null, "Ups!! Ocurrio un error: " + e.getMessage());
                 }
             }
         });
@@ -148,23 +147,22 @@ public class CategoryFrom extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(textNameCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .addComponent(textDescriptionCategory)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAceptar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnActualizar)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminar))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(textNameCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                            .addComponent(textDescriptionCategory)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAceptar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnActualizar)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEliminar))))
                 .addContainerGap(25, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(165, 165, 165))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -8,6 +8,8 @@ import entidad.constantes.sqlconstant.SqlConstant;
 import entidad.entitys.inventario.Product;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
+
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,10 +98,10 @@ public class AccessProduct {
 
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.PRODUCT);
-                result = SqlConstant.SUCCESS_PROCESS;
+                result = SqlConstant.SUCCESS_UPDATE;
             } else {
                 log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, Constants.ONE_NEG);
-                result = SqlConstant.ERROR_PROCESS;
+                result = SqlConstant.ERROR_UPDATE;
             }
             stmt.close();
             ConfigurationDb.closeConnection();
@@ -121,10 +123,10 @@ public class AccessProduct {
 
                 if (stmt.executeUpdate() > Constants.ZERO) {
                     log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE, SqlConstant.PRODUCT);
-                    result = SqlConstant.SUCCESS_PROCESS;
+                    result = SqlConstant.SUCCESS_DELETE;
                 } else {
-                    log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, Constants.ONE_NEG);
-                    result = SqlConstant.ERROR_PROCESS;
+                    log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, SqlConstant.PRODUCT);
+                    result = SqlConstant.ERROR_DELETE;
                 }
                 stmt.close();
                 ConfigurationDb.closeConnection();
@@ -151,17 +153,17 @@ public class AccessProduct {
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     productFind = Product.builder()
-                            .idProduct(rs.getInt(1))
-                            .name(rs.getString(2))
-                            .description(rs.getString(3))
-                            .pathImage(rs.getString(4))
-                            .quantity(rs.getInt(5))
-                            .dateCreate(rs.getObject(NAME_FIELDS[5], LocalDateTime.class))
-                            .dateUpdate(rs.getObject(NAME_FIELDS[6], LocalDateTime.class))
-                            .fk_category(rs.getInt(8))
-                            .fk_supplier(rs.getInt(9))
-                            .fk_storage(rs.getInt(10))
-                            .build();
+                        .idProduct(rs.getInt(1))
+                        .name(rs.getString(2))
+                        .description(rs.getString(3))
+                        .pathImage(rs.getString(4))
+                        .quantity(rs.getInt(5))
+                        .dateCreate(rs.getObject(NAME_FIELDS[5], LocalDateTime.class))
+                        .dateUpdate(rs.getObject(NAME_FIELDS[6], LocalDateTime.class))
+                        .fk_category(rs.getInt(8))
+                        .fk_supplier(rs.getInt(9))
+                        .fk_storage(rs.getInt(10))
+                        .build();
                 }
 
                 rs.close();
@@ -171,29 +173,23 @@ public class AccessProduct {
                 if (Objects.isNull(productFind)) {
                     log.error(ConstantLogger.LOG_ERROR_FIND_NOT_FOUND);
                 } else {
-                    log.error(ConstantLogger.LOG_SUCCESS_QUERY_FIND_ID, productFind.getIdProduct());
+                    log.info(ConstantLogger.LOG_ERROR_QUERY_FIND_ID, productFind.getIdProduct());
                 }
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            result = result.concat(e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
         }
 
         return productFind;
     }
 
-    public List<Product> callFindProduct(Product product, int page, int size) throws ParseException {
-        List<Product> categories = new ArrayList<>();
+    public List<Product> callFindAllProduct() throws ParseException {
+        List<Product> productList = new ArrayList<>();
         String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
 
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     UtilsSql.queryFindById(namesFields, SqlConstant.PRODUCT, abbreviation)
-                     + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE)
-                     + " LIMIT ? OFFSET ?")) {
-
-            stmt.setInt(1, product.getIdProduct());
-            stmt.setInt(2, size);
-            stmt.setInt(3, (page - 1) * size);
+                     UtilsSql.queryFindAll(namesFields, SqlConstant.PRODUCT))) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -209,13 +205,15 @@ public class AccessProduct {
                     .fk_supplier(rs.getInt(9))
                     .fk_storage(rs.getInt(10))
                     .build();
-                categories.add(productFind);
+                productList.add(productFind);
             }
             stmt.close();
             rs.close();
+            ConfigurationDb.closeConnection();
         } catch (SQLException e) {
             log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
         }
-        return categories;
+        return productList;
     }
 }
