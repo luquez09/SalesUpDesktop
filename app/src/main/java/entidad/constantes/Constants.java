@@ -8,5 +8,7 @@ public class Constants {
     public static String EMPTY = "";
 
     public static String ERROR_SQL = "No fue posible hacer la transaccion, Ocurrio un error causa: ";
+    public static String ERROR_APP = "Ocurrio un error: ";
+
 
 }
