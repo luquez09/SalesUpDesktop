@@ -27,6 +27,7 @@ public class Menu extends JComponent {
         {"Usuarios", "Empleado", "Clientes", "Roles", "Historial empleado"},
         {"Ventas", "Hoy", "Consultar", "Promociones"},
         {"Mesas"},
+        {"Salir"}
     };
 
     public Menu() {

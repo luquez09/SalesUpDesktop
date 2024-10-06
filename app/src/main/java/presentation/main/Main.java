@@ -1,18 +1,20 @@
 package presentation.main;
 
 import presentation.inventario.SupplierFrom;
-import presentation.main.component.DefaultForm;
 
 import java.awt.Component;
 import presentation.main.component.Header;
 import presentation.main.win11.ScrollPaneWin11;
 
 import javax.swing.*;
+import lombok.extern.log4j.Log4j2;
+import presentation.inventario.CategoryFrom;
 
 /**
  * @author IvanLuquez
  * @since 05/10/2024
  */
+@Log4j2
 public class Main extends javax.swing.JFrame {
 
     /**
@@ -24,11 +26,15 @@ public class Main extends javax.swing.JFrame {
             @Override
             public void selected(int index, int subIndex) {
                 //Aca se debe hacer un switch para determinar por el index que formulario llamar.
-                showForm(new SupplierFrom());
+                if(index == 1 && subIndex == 1) {
+                    showForm(new CategoryFrom());
+                } else if(index == 1 && subIndex == 2) {
+                    showForm(new SupplierFrom());
+                }
             }
         });
     }
-
+    
     private void showForm(Component com) {
         body.removeAll();
         body.add(com);
@@ -125,10 +131,8 @@ public class Main extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Main().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Main().setVisible(true);
         });
     }
 
