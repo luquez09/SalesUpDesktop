@@ -15,21 +15,23 @@ import presentation.inventario.CategoryFrom;
  * @since 05/10/2024
  */
 @Log4j2
-public class Main extends javax.swing.JFrame {
+public class PaneInit extends JFrame {
 
     /**
-     * Creates new form Main
+     * Creates new form PaneInit
      */
-    public Main() {
+    public PaneInit() {
         initComponents();
         menu1.setEvent(new MenuEvent() {
             @Override
             public void selected(int index, int subIndex) {
-                //Aca se debe hacer un switch para determinar por el index que formulario llamar.
+                log.info(body.getSize());
                 if(index == 1 && subIndex == 1) {
                     showForm(new CategoryFrom());
                 } else if(index == 1 && subIndex == 2) {
                     showForm(new SupplierFrom());
+                } else {
+
                 }
             }
         });
@@ -119,20 +121,20 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new Main().setVisible(true);
+            new PaneInit().setVisible(true);
         });
     }
 

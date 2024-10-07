@@ -5,15 +5,12 @@ import entidad.constantes.Constants;
 import entidad.entitys.inventario.Category;
 import lombok.extern.log4j.Log4j2;
 import negocio.inventario.LogicalCategory;
-import javax.swing.JOptionPane;
+
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.text.ParseException;
 import java.util.List;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JButton;
+
 /**
  *
  * @author ivanl
@@ -227,8 +224,6 @@ public class CategoryFrom extends javax.swing.JPanel {
         textNameCategory.setText(defaultTableModel.getValueAt(indexSelect, 1).toString());
         textDescriptionCategory.setText(defaultTableModel.getValueAt(indexSelect, 2).toString());
         accionCategory.setIdCategory(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 0).toString()));
-        accionCategory.setName(defaultTableModel.getValueAt(indexSelect, 1).toString());
-        accionCategory.setDescription(defaultTableModel.getValueAt(indexSelect, 2).toString());
         btnAceptar.setEnabled(false);
         btnCancelar.setVisible(true);
     }//GEN-LAST:event_tableDataCategoryMouseClicked
@@ -244,7 +239,11 @@ public class CategoryFrom extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnActualizarActionPerformed
+        accionCategory.setDescription(textDescriptionCategory.getText());
+        accionCategory.setName(textNameCategory.getText());
+
         log.info("Actualizando categoria con ID: {}", accionCategory.getIdCategory());
+        log.info("Cuerpo del DTO: {}", accionCategory);
         String result = logicalCategory.updateCategory(accionCategory);
         formComponentShown();
         cleanFrom();
@@ -262,24 +261,34 @@ public class CategoryFrom extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void formComponentShown() throws ParseException {
-        String countRegister;
-        List<Category> categoryList = logicalCategory.categoryList();
-        DefaultTableModel defaultTableModel = (DefaultTableModel)tableDataCategory.getModel();
-        defaultTableModel.setRowCount(0);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                String countRegister;
+                List<Category> categoryList = logicalCategory.categoryList();
+                log.info("Consultando los datos de categoria: {}", categoryList.toString());
+                DefaultTableModel defaultTableModel = (DefaultTableModel) tableDataCategory.getModel();
+                defaultTableModel.setRowCount(0);
 
-        for (entidad.entitys.inventario.Category category : categoryList) {
-            defaultTableModel.addRow(new Object[] {
-                category.getIdCategory(),
-                category.getName(),
-                category.getDescription(),
-                category.getDateCreate(),
-                category.getDateUpdate()
-            });
-        }
-        
-        countRegister = lblCountRegister.getText() + categoryList.size();
-        lblCountRegister.setText(countRegister);
+                for (Category category : categoryList) {
+                    defaultTableModel.addRow(new Object[]{
+                            category.getIdCategory(),
+                            category.getName(),
+                            category.getDescription(),
+                            category.getDateCreate(),
+                            category.getDateUpdate()
+                    });
+                }
+
+                countRegister = Constants.NUMBER_REGISTER + categoryList.size();
+                lblCountRegister.setText(countRegister);
+
+                defaultTableModel.fireTableDataChanged();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
     }
+
     private void tableDataCategoryComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tableDataCategoryComponentShown
         try {
             formComponentShown();
