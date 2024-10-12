@@ -74,16 +74,16 @@ public class AccessProduct {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                  UtilsSql.queryUpdate(SqlConstant.PRODUCT, abbreviation)
-                 + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[3].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[5].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[6].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[7].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[8].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[9].concat(SqlConstant.UPDATE_VALUE)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[2].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[3].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[4].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[5].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[6].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[7].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[8].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[9].concat(SqlConstant.VALUE)
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, product.getName());
             stmt.setString(2, product.getDescription());
@@ -117,7 +117,7 @@ public class AccessProduct {
     public String callDeleteProduct(Product product) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.PRODUCT, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
                 stmt.setInt(1, product.getIdProduct());
 
@@ -146,7 +146,7 @@ public class AccessProduct {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt =
                  conn.prepareStatement(UtilsSql.queryFindById(namesFields, SqlConstant.PRODUCT, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
                 stmt.setInt(1, product.getIdProduct());
 

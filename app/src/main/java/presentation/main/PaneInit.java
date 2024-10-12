@@ -1,5 +1,6 @@
 package presentation.main;
 
+import presentation.inventario.ListPriceForm;
 import presentation.inventario.SupplierFrom;
 
 import java.awt.Component;
@@ -31,7 +32,7 @@ public class PaneInit extends JFrame {
                 } else if(index == 1 && subIndex == 2) {
                     showForm(new SupplierFrom());
                 } else {
-
+                    showForm(new ListPriceForm());
                 }
             }
         });
@@ -126,7 +127,7 @@ public class PaneInit extends JFrame {
             java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>

@@ -19,8 +19,8 @@ public class SqlConstant {
     public static final String FIND_INTO = "SELECT %s FROM \"schComercio\".%s %s";
     public static final String FIND_ALL = "SELECT %s FROM \"schComercio\".%s";
 
-    public static final String UPDATE_VALUE = "= ?";
-    public static final String UPDATE_WHERE = " WHERE %s.%s %s";
+    public static final String VALUE = "= ?";
+    public static final String WHERE = " WHERE %s.%s %s";
 
     public static final String BLANCK = "";
 

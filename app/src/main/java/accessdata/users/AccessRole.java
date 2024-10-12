@@ -50,9 +50,9 @@ public class AccessRole {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
              UtilsSql.queryUpdate(SqlConstant.ROLE, abbreviation)
-                 + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[9].concat(SqlConstant.UPDATE_VALUE)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[9].concat(SqlConstant.VALUE)
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, role.getCode());
             stmt.setString(2, role.getDescription());
@@ -77,7 +77,7 @@ public class AccessRole {
     public String callDeleteRole(Role role) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.ROLE, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setInt(1, role.getIdRole());
 
@@ -106,7 +106,7 @@ public class AccessRole {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
              UtilsSql.queryFindById(namesFields, SqlConstant.ROLE, abbreviation)
-                     + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.ROLE))) {
+                     + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.ROLE))) {
 
             stmt.setInt(1, role.getIdRole());
 

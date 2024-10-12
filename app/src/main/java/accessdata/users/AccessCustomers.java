@@ -1,11 +1,9 @@
 package accessdata.users;
 
-import accessdata.utils.UtilsDate;
 import accessdata.utils.UtilsSql;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
-import entidad.entitys.inventario.Product;
 import entidad.entitys.usuarios.Customers;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
@@ -14,9 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,12 +63,12 @@ public class AccessCustomers {
     public String callUpdateCustomers(Customers customers) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryUpdate(SqlConstant.CUSTOMERS, abbreviation)
-                 + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[3].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[5].concat(SqlConstant.UPDATE_VALUE)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[2].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[3].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[4].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[5].concat(SqlConstant.VALUE)
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, customers.getName());
             stmt.setString(2, customers.getAddress());
@@ -101,9 +97,9 @@ public class AccessCustomers {
     public String callDeleteCustomer(Customers customers) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.CUSTOMERS, abbreviation)
-                    + String.format(SqlConstant.UPDATE_WHERE,
+                    + String.format(SqlConstant.WHERE,
                                      abbreviation, NAME_FIELDS[0],
-                                     SqlConstant.UPDATE_VALUE))) {
+                                     SqlConstant.VALUE))) {
 
             stmt.setInt(1, customers.getIdCustomers());
 
@@ -132,9 +128,9 @@ public class AccessCustomers {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
              UtilsSql.queryFindById(namesFields, SqlConstant.CUSTOMERS, abbreviation)
-                                        + String.format(SqlConstant.UPDATE_WHERE,
+                                        + String.format(SqlConstant.WHERE,
                                         abbreviation, NAME_FIELDS[0],
-                                        SqlConstant.UPDATE_VALUE))) {
+                                        SqlConstant.VALUE))) {
 
             stmt.setInt(1, customers.getIdCustomers());
 

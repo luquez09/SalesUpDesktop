@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Log4j2
 public class AccessSupplier {
@@ -64,14 +63,14 @@ public class AccessSupplier {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                  UtilsSql.queryUpdate(SqlConstant.SUPPLIER, abbreviation)
-                     + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[3].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[5].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[6].concat(SqlConstant.UPDATE_VALUE)
-                     + String.format(SqlConstant.UPDATE_WHERE, abbreviation,
-                         NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                     + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[2].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[3].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[4].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[5].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[6].concat(SqlConstant.VALUE)
+                     + String.format(SqlConstant.WHERE, abbreviation,
+                         NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, supplier.getName());
             stmt.setString(2, supplier.getName_social());
@@ -99,7 +98,7 @@ public class AccessSupplier {
     public String callDeleteSupplier(Supplier category) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.SUPPLIER, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setInt(1, category.getIdSupplier());
 

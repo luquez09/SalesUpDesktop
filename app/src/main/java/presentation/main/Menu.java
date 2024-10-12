@@ -55,7 +55,6 @@ public class Menu extends JComponent {
                         item.setSelected(true);
                         addSubMenu(item, index, length, getComponentZOrder(item));
                     } else {
-                        //  Hide menu
                         hideMenu(item, index);
                         item.setSelected(false);
                     }

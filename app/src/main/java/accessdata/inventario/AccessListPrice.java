@@ -19,7 +19,6 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Log4j2
 public class AccessListPrice {
@@ -75,14 +74,14 @@ public class AccessListPrice {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                  UtilsSql.queryUpdate(SqlConstant.LIST_PRICE, abbreviation)
-                     + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[3].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[5].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                     + NAME_FIELDS[6].concat(SqlConstant.UPDATE_VALUE)
-                     + String.format(SqlConstant.UPDATE_WHERE, abbreviation,
-                     NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                     + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[2].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[3].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[4].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[5].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                     + NAME_FIELDS[6].concat(SqlConstant.VALUE)
+                     + String.format(SqlConstant.WHERE, abbreviation,
+                     NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, listPrice.getName());
             stmt.setString(2, listPrice.getDescription());
@@ -110,7 +109,7 @@ public class AccessListPrice {
     public String callDeleteListPrice(ListPrice listPrice) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.LIST_PRICE, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setInt(1, listPrice.getIdListPrice());
 
@@ -132,13 +131,16 @@ public class AccessListPrice {
         return result;
     }
 
-    public List<ListPrice> callFindListPrice() throws ParseException {
+    public List<ListPrice> callFindListPrice(int idProduct) throws ParseException {
         List<ListPrice> listPriceList = new ArrayList<>();
 
         String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
         try (Connection conn = ConfigurationDb.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryFindAll(namesFields, SqlConstant.LIST_PRICE))) {
-
+             PreparedStatement stmt = conn.prepareStatement(
+                     UtilsSql.queryFindById(namesFields, SqlConstant.LIST_PRICE, abbreviation)
+                     + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[7], SqlConstant.VALUE)
+             )) {
+            stmt.setInt(1, idProduct);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 ListPrice categoryFind = ListPrice.builder()

@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 public class CategoryFrom extends javax.swing.JPanel {
     private final LogicalCategory logicalCategory = new LogicalCategory();
-    private Category accionCategory = entidad.entitys.inventario.Category.builder().build();
+    private Category accionCategory = Category.builder().build();
     /**
      * Creates new form Category
      */
@@ -284,7 +284,8 @@ public class CategoryFrom extends javax.swing.JPanel {
 
                 defaultTableModel.fireTableDataChanged();
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error("Ups!! Ocurrio un error al cargar los datos: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Ocurrio un error, cauda: " + e.getMessage());
             }
         });
     }

@@ -5,7 +5,6 @@ import accessdata.utils.UtilsSql;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
-import entidad.entitys.inventario.Product;
 import entidad.entitys.usuarios.HistoryEmployee;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
@@ -66,12 +65,12 @@ public class AccessHistoryEmployee {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
              UtilsSql.queryUpdate(SqlConstant.HISTORY, abbreviation)
-                 + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[3].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[2].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[3].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[4].concat(SqlConstant.VALUE).concat(Constants.COMMA)
                  + NAME_FIELDS[5]
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setTimestamp(1, Timestamp.valueOf(UtilsDate.getDateNow()));
             stmt.setTimestamp(2, Timestamp.valueOf(UtilsDate.getDateNow()));
@@ -99,7 +98,7 @@ public class AccessHistoryEmployee {
     public String callDeleteHistoryEmployee(HistoryEmployee employee) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.HISTORY, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setInt(1, employee.getIdHistoryEmployee());
 
@@ -128,7 +127,7 @@ public class AccessHistoryEmployee {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt =
                      conn.prepareStatement(UtilsSql.queryFindById(namesFields, SqlConstant.HISTORY, abbreviation)
-                             + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                             + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setInt(1, product.getIdHistoryEmployee());
 
@@ -168,7 +167,7 @@ public class AccessHistoryEmployee {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
              UtilsSql.queryFindById(namesFields, SqlConstant.HISTORY, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE)
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE)
                  + " LIMIT ? OFFSET ?")) {
 
             stmt.setInt(1, employee.getIdHistoryEmployee());

@@ -6,23 +6,26 @@ import entidad.entitys.inventario.ListPrice;
 import java.text.ParseException;
 import java.util.List;
 
+/**
+ * @author ivanl
+ */
 public class LogicalListPrice {
 
     AccessListPrice accessListPrice = new AccessListPrice();
 
-    private String addListPrice(ListPrice listPrice) throws ParseException {
+    public String addListPrice(ListPrice listPrice) throws ParseException {
         return accessListPrice.callSaveListPrice(listPrice);
     }
 
-    private String updateListPrice(ListPrice listPrice) {
+    public String updateListPrice(ListPrice listPrice) {
         return accessListPrice.callUpdateListPrice(listPrice);
     }
 
-    private String deleteListPrice(ListPrice listPrice) {
+    public String deleteListPrice(ListPrice listPrice) {
         return accessListPrice.callDeleteListPrice(listPrice);
     }
 
-    private List<ListPrice> findAllListPrice() throws ParseException {
-        return accessListPrice.callFindListPrice();
+    public List<ListPrice> findAllListPriceByProduct(int idProduct) throws ParseException {
+        return accessListPrice.callFindListPrice(idProduct);
     }
 }

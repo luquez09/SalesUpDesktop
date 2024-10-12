@@ -1,15 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package presentation.inventario;
+
+import entidad.entitys.inventario.Category;
+import entidad.entitys.inventario.ListPrice;
+import entidad.entitys.inventario.Product;
+import lombok.extern.log4j.Log4j2;
+import negocio.inventario.LogicalListPrice;
+import negocio.inventario.LogicalProduct;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author ivanl
  */
-public class ListPriceForm extends javax.swing.JPanel {
+@Log4j2
+public class ListPriceForm extends JPanel {
 
+    private final LogicalListPrice logicalListPrice = new LogicalListPrice();
+    private final LogicalProduct logicalProduct = new LogicalProduct();
+    private ListPrice listPriceItems = ListPrice.builder().build();
+    private List<Product> listProductResult = new ArrayList<>();
+    private String searchProduct;
+    private int idProductFind;
     /**
      * Creates new form ListPriceForm
      */
@@ -53,6 +74,7 @@ public class ListPriceForm extends javax.swing.JPanel {
         btnActualizar = new javax.swing.JButton();
         btnBorrar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        lblBuscar = new javax.swing.JLabel();
 
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
@@ -165,7 +187,12 @@ public class ListPriceForm extends javax.swing.JPanel {
         });
         tableProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableProductosMouseClicked(evt);
+                try {
+                    tableProductosMouseClicked(evt);
+                } catch (ParseException e) {
+                    JOptionPane.showMessageDialog(null, "Ups, ocurrio un error: " + e.getMessage());
+                    log.info("Ups, ocurrio un error: " + e.getMessage());
+                }
             }
         });
         jScrollPane2.setViewportView(tableProductos);
@@ -176,6 +203,12 @@ public class ListPriceForm extends javax.swing.JPanel {
         }
 
         jLabel12.setText("Buscar");
+
+        textBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textBuscarKeyReleased(evt);
+            }
+        });
 
         btnClean.setText("Limpiar");
         btnClean.addActionListener(new java.awt.event.ActionListener() {
@@ -247,11 +280,18 @@ public class ListPriceForm extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(14, 14, 14)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12)
-                                    .addComponent(btnClean)
-                                    .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(14, 14, 14)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel12)
+                                            .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(btnClean))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 485, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
@@ -300,68 +340,179 @@ public class ListPriceForm extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnClean, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblBuscar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnClean, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)))
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
                     .addComponent(btnActualizar)
                     .addComponent(btnBorrar)
                     .addComponent(btnCancelar))
-                .addGap(28, 28, 28))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void radioButtonTrueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonTrueActionPerformed
+    private void radioButtonTrueActionPerformed(ActionEvent evt) {//GEN-FIRST:event_radioButtonTrueActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_radioButtonTrueActionPerformed
 
-    private void radioButtonFalseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonFalseActionPerformed
+    private void radioButtonFalseActionPerformed(ActionEvent evt) {//GEN-FIRST:event_radioButtonFalseActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_radioButtonFalseActionPerformed
 
-    private void btnCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCleanActionPerformed
+    private void btnCleanActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnCleanActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCleanActionPerformed
 
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+    private void btnAgregarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-        // TODO add your handling code here:
+        getAllDataListPrice();
+        getAllDataProduct();
+        btnCancelar.setVisible(false);
     }//GEN-LAST:event_formAncestorAdded
 
-    private void tableProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductosMouseClicked
-        // TODO add your handling code here:
+    private void tableProductosMouseClicked(MouseEvent evt) throws ParseException {//GEN-FIRST:event_tableProductosMouseClicked
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableProductos.getModel();
+        int indexSelect = tableProductos.getSelectedRow();
+        String nameProduct = defaultTableModel.getValueAt(indexSelect, 1).toString();
+
+        List<ListPrice> listPrices = logicalListPrice.findAllListPriceByProduct(
+                Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString()));
+
+        if (listPrices.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                null, "No se tienen listas de precios para el producto: " + nameProduct);
+        } else {
+            defaultTableModel.setRowCount(0);
+
+            for (ListPrice listPrice : listPrices) {
+                defaultTableModel.addRow(new Object[]{
+                        listPrice.getIdListPrice(),
+                        listPrice.getName(),
+                        listPrice.getPrice(),
+                        listPrice.getDescription(),
+                        listPrice.getIsActive(),
+                        listPrice.getDateCreate(),
+                        listPrice.getDateUpdate()
+                });
+            }
+        }
     }//GEN-LAST:event_tableProductosMouseClicked
 
-    private void tableListPriceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableListPriceMouseClicked
+    private void tableListPriceMouseClicked(MouseEvent evt) {//GEN-FIRST:event_tableListPriceMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_tableListPriceMouseClicked
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+    private void btnActualizarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+    private void btnBorrarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBorrarActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+    private void btnCancelarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void textBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textBuscarKeyReleased
+        searchProduct(textBuscar.getText());
+    }//GEN-LAST:event_textBuscarKeyReleased
+
+    private void getAllDataListPrice() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                String countRegister;
+                List<ListPrice> listPricesResult = logicalListPrice.findAllListPriceByProduct(idProductFind);
+                DefaultTableModel defaultTableModel = (DefaultTableModel)tableListPrice.getModel();
+                defaultTableModel.setRowCount(0);
+
+                for (ListPrice listPrice : listPricesResult) {
+                    defaultTableModel.addRow(new Object[] {
+                            listPrice.getIdListPrice(),
+                            listPrice.getName(),
+                            listPrice.getPrice(),
+                            listPrice.getDescription(),
+                            listPrice.getIsActive(),
+                            listPrice.getDateCreate(),
+                            listPrice.getDateUpdate()
+                    });
+                }
+
+            } catch (ParseException e) {
+                log.error("Ups!! Ocurrio un error al cargar los datos: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Ocurrio un error, cauda: " + e.getMessage());
+            }
+        });
+
+    }
+
+    private void getAllDataProduct() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                String countRegister;
+                listProductResult = logicalProduct.findAllProduct();
+                DefaultTableModel defaultTableModel = (DefaultTableModel)tableProductos.getModel();
+                defaultTableModel.setRowCount(0);
+
+                if (listProductResult.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Registremos productos primero.");
+                } else {
+                    for (Product product : listProductResult) {
+                        defaultTableModel.addRow(new Object[] {
+                                product.getIdProduct(),
+                                product.getName()
+                        });
+                    }
+                }
+
+            } catch (ParseException e) {
+                log.error("Ups!! Ocurrio un error al cargar los datos: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Ocurrio un error, cauda: " + e.getMessage());
+            }
+        });
+    }
+
+    private void searchProduct(String nameProduct) {
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableProductos.getModel();
+        defaultTableModel.setRowCount(0);
+        List<Product> productListFilter;
+
+        if (nameProduct.isEmpty() || nameProduct.isBlank()) {
+            lblBuscar.setText("Sin resultados.");
+            productListFilter = listProductResult;
+        } else {
+            productListFilter = listProductResult.stream()
+                .filter(product -> product.getName().toLowerCase().startsWith(nameProduct.toLowerCase()))
+                .toList();
+
+            lblBuscar.setText("Resultados: " + productListFilter.size());
+        }
+
+        for (Product product : productListFilter) {
+            defaultTableModel.addRow(new Object[] {
+                    product.getIdProduct(),
+                    product.getName()
+            });
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
@@ -383,6 +534,7 @@ public class ListPriceForm extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelDateCreate;
     private javax.swing.JLabel labelDateUpdate;
+    private javax.swing.JLabel lblBuscar;
     private javax.swing.JRadioButton radioButtonFalse;
     private javax.swing.JRadioButton radioButtonTrue;
     private javax.swing.JTable tableListPrice;

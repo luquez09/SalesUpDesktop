@@ -67,11 +67,11 @@ public class AccessCategory {
         String result = "";
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryUpdate(SqlConstant.CATEGORY, abbreviation)
-                 + NAME_FIELDS[1].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[2].concat(SqlConstant.UPDATE_VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[4].concat(SqlConstant.UPDATE_VALUE)
-                 + String.format(SqlConstant.UPDATE_WHERE,
-                     abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + NAME_FIELDS[1].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[2].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[4].concat(SqlConstant.VALUE)
+                 + String.format(SqlConstant.WHERE,
+                     abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, category.getName());
             stmt.setString(2, category.getDescription());
@@ -99,7 +99,7 @@ public class AccessCategory {
         String result = Constants.EMPTY;
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.CATEGORY, abbreviation)
-                 + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE))) {
+                 + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
                 stmt.setInt(1, category.getIdCategory());
 
@@ -128,7 +128,7 @@ public class AccessCategory {
             String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
 
             String sql = UtilsSql.queryFindById(namesFields, SqlConstant.CATEGORY, abbreviation)
-                    + String.format(SqlConstant.UPDATE_WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.UPDATE_VALUE);
+                    + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE);
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, category.getIdCategory());
