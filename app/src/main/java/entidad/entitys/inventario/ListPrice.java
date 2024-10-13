@@ -30,4 +30,5 @@ public class ListPrice {
     private LocalDateTime dateCreate;
     private LocalDateTime dateUpdate;
     private Integer fk_idProduct;
+    private String nameProduct;
 }

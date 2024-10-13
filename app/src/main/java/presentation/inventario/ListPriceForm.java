@@ -7,6 +7,7 @@ import entidad.entitys.inventario.Product;
 import lombok.extern.log4j.Log4j2;
 import negocio.inventario.LogicalListPrice;
 import negocio.inventario.LogicalProduct;
+import negocio.utils.UtilsDate;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -111,14 +112,14 @@ public class ListPriceForm extends JPanel {
 
             },
             new String [] {
-                "id", "Nombre", "Precio", "Descripcion", "Estado", "create", "update", "idProduct"
+                "id", "Nombre", "Precio", "Descripcion", "Estado", "create", "update", "idProduct", "Producto"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -136,16 +137,17 @@ public class ListPriceForm extends JPanel {
         });
         jScrollPane1.setViewportView(tableListPrice);
         if (tableListPrice.getColumnModel().getColumnCount() > 0) {
-            tableListPrice.getColumnModel().getColumn(0).setMinWidth(1);
-            tableListPrice.getColumnModel().getColumn(0).setMaxWidth(1);
+            tableListPrice.getColumnModel().getColumn(0).setMinWidth(0);
+            tableListPrice.getColumnModel().getColumn(0).setMaxWidth(0);
             tableListPrice.getColumnModel().getColumn(1).setResizable(false);
             tableListPrice.getColumnModel().getColumn(2).setResizable(false);
-            tableListPrice.getColumnModel().getColumn(3).setResizable(false);
+            tableListPrice.getColumnModel().getColumn(3).setMinWidth(0);
+            tableListPrice.getColumnModel().getColumn(3).setMaxWidth(0);
             tableListPrice.getColumnModel().getColumn(4).setResizable(false);
-            tableListPrice.getColumnModel().getColumn(5).setMinWidth(1);
-            tableListPrice.getColumnModel().getColumn(5).setMaxWidth(1);
-            tableListPrice.getColumnModel().getColumn(6).setMinWidth(1);
-            tableListPrice.getColumnModel().getColumn(6).setMaxWidth(1);
+            tableListPrice.getColumnModel().getColumn(5).setMinWidth(0);
+            tableListPrice.getColumnModel().getColumn(5).setMaxWidth(0);
+            tableListPrice.getColumnModel().getColumn(6).setMinWidth(0);
+            tableListPrice.getColumnModel().getColumn(6).setMaxWidth(0);
             tableListPrice.getColumnModel().getColumn(7).setMinWidth(0);
             tableListPrice.getColumnModel().getColumn(7).setMaxWidth(0);
         }
@@ -446,8 +448,8 @@ public class ListPriceForm extends JPanel {
             radioButtonFalse.setSelected(true);
         }
 
-        labelDateCreate.setText(defaultTableModel.getValueAt(indexSelect, 5).toString());
-        labelDateUpdate.setText(defaultTableModel.getValueAt(indexSelect, 6).toString());
+        labelDateCreate.setText(UtilsDate.getDateFormated(defaultTableModel.getValueAt(indexSelect, 5).toString()));
+        labelDateUpdate.setText(UtilsDate.getDateFormated(defaultTableModel.getValueAt(indexSelect, 6).toString()));
 
         listPriceItems.setIdListPrice(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString()));
         enableButton(true);
@@ -505,6 +507,7 @@ public class ListPriceForm extends JPanel {
                 defaultTableModel.setRowCount(0);
 
                 for (ListPrice listPrice : listPricesResult) {
+                    log.info(listPrice.getNameProduct());
                     defaultTableModel.addRow(new Object[] {
                             listPrice.getIdListPrice(),
                             listPrice.getName(),
@@ -512,7 +515,9 @@ public class ListPriceForm extends JPanel {
                             listPrice.getDescription(),
                             listPrice.getIsActive(),
                             listPrice.getDateCreate(),
-                            listPrice.getDateUpdate()
+                            listPrice.getDateUpdate(),
+                            listPrice.getFk_idProduct(),
+                            listPrice.getNameProduct()
                     });
                 }
 

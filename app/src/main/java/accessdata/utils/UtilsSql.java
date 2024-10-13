@@ -25,4 +25,8 @@ public class UtilsSql {
     public static String queryFindAll(String namesFields, String table) {
         return String.format(SqlConstant.FIND_ALL, namesFields, table);
     }
+
+    public static String queryFindAllJoin(String namesFields, String table, String tableJoin, String joinTable) {
+        return String.format(SqlConstant.FIND_ALL_JOIN, namesFields, table, tableJoin, joinTable);
+    }
 }

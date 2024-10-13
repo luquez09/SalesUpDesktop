@@ -169,7 +169,7 @@ public class AccessCustomers {
 
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-             UtilsSql.queryFindById(namesFields, SqlConstant.CUSTOMERS, SqlConstant.BLANCK))) {
+             UtilsSql.queryFindById(namesFields, SqlConstant.CUSTOMERS, SqlConstant.BLANC))) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

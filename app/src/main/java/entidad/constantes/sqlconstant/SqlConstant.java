@@ -18,11 +18,12 @@ public class SqlConstant {
     public static final String DELETE_INTO = "DELETE FROM \"schComercio\".%s %s";
     public static final String FIND_INTO = "SELECT %s FROM \"schComercio\".%s %s";
     public static final String FIND_ALL = "SELECT %s FROM \"schComercio\".%s";
+    public static final String FIND_ALL_JOIN = "SELECT %s FROM \"schComercio\".%s JOIN \"schComercio\".%s ON %s";
 
     public static final String VALUE = "= ?";
     public static final String WHERE = " WHERE %s.%s %s";
 
-    public static final String BLANCK = "";
+    public static final String BLANC = "";
 
     //Constant Inventario
     public static final String CATEGORY = "category";

@@ -25,8 +25,11 @@ public class AccessListPrice {
 
     private final String[] NAME_FIELDS = {"idlistprice", "name_list", "description", "price", "active", "date_create",
                                           "date_update", "fk_idproduct"};
+    private final String[] NAME_JOIN = {"list.idlistprice", "list.name_list", "list.description", "list.price",
+            "list.active", "list.date_create", "list.date_update", "list.fk_idproduct", "prod.name_product"};
     String result = "Error: ";
     String abbreviation = "list";
+    String abbreviationProduct = "prod";
 
     public String callSaveListPrice(ListPrice listPrice) throws ParseException {
         try (Connection conn = ConfigurationDb.getConnection();
@@ -160,12 +163,14 @@ public class AccessListPrice {
 
     public List<ListPrice> callFindAllListPrice() throws ParseException {
         List<ListPrice> listPriceList = new ArrayList<>();
+        String namesFields = String.join(Constants.COMMA, NAME_JOIN);
+        String joinTable = "list.fk_idproduct = prod.idproduct";
 
-        String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     UtilsSql.queryFindAll(namesFields, SqlConstant.LIST_PRICE)
-             )) {
+                 UtilsSql.queryFindAllJoin(namesFields,
+                     SqlConstant.LIST_PRICE.concat(Constants.SPACE_BLANC).concat(abbreviation),
+                     SqlConstant.PRODUCT.concat(Constants.SPACE_BLANC).concat(abbreviationProduct), joinTable))) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -178,6 +183,7 @@ public class AccessListPrice {
                         .dateCreate(rs.getObject(NAME_FIELDS[5], LocalDateTime.class))
                         .dateUpdate(rs.getObject(NAME_FIELDS[6], LocalDateTime.class))
                         .fk_idProduct(rs.getInt(8))
+                        .nameProduct(rs.getString(9))
                         .build();
                 listPriceList.add(categoryFind) ;
             }
