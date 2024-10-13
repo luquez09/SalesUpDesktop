@@ -1,5 +1,6 @@
 package presentation.inventario;
 
+import entidad.constantes.Constants;
 import entidad.entitys.inventario.Category;
 import entidad.entitys.inventario.ListPrice;
 import entidad.entitys.inventario.Product;
@@ -47,6 +48,7 @@ public class ListPriceForm extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnGroupState = new javax.swing.ButtonGroup();
         jLabel7 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         textNombre = new javax.swing.JTextField();
@@ -98,33 +100,25 @@ public class ListPriceForm extends JPanel {
 
         jLabel5.setText("Estado");
 
-        radioButtonTrue.setText("Habilitar");
-        radioButtonTrue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioButtonTrueActionPerformed(evt);
-            }
-        });
+        btnGroupState.add(radioButtonTrue);
+        radioButtonTrue.setText("Habilitado");
 
-        radioButtonFalse.setText("Deshabilitar");
-        radioButtonFalse.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioButtonFalseActionPerformed(evt);
-            }
-        });
+        btnGroupState.add(radioButtonFalse);
+        radioButtonFalse.setText("Deshabilitado");
 
         tableListPrice.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "id", "Nombre", "Precio", "Descripcion", "Estado", "create", "update"
+                "id", "Nombre", "Precio", "Descripcion", "Estado", "create", "update", "idProduct"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -152,6 +146,8 @@ public class ListPriceForm extends JPanel {
             tableListPrice.getColumnModel().getColumn(5).setMaxWidth(1);
             tableListPrice.getColumnModel().getColumn(6).setMinWidth(1);
             tableListPrice.getColumnModel().getColumn(6).setMaxWidth(1);
+            tableListPrice.getColumnModel().getColumn(7).setMinWidth(0);
+            tableListPrice.getColumnModel().getColumn(7).setMaxWidth(0);
         }
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -221,7 +217,12 @@ public class ListPriceForm extends JPanel {
         btnAgregar.setText("AGREGAR");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarActionPerformed(evt);
+                try {
+                    btnAgregarActionPerformed(evt);
+                } catch (ParseException e) {
+                    JOptionPane.showMessageDialog(null, "Ups, ocurrio un error: " + e.getMessage());
+                    log.info("Ups, ocurrio un error: " + e.getMessage());
+                }
             }
         });
 
@@ -302,7 +303,7 @@ public class ListPriceForm extends JPanel {
                         .addComponent(btnBorrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancelar)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,25 +367,36 @@ public class ListPriceForm extends JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void radioButtonTrueActionPerformed(ActionEvent evt) {//GEN-FIRST:event_radioButtonTrueActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioButtonTrueActionPerformed
-
-    private void radioButtonFalseActionPerformed(ActionEvent evt) {//GEN-FIRST:event_radioButtonFalseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioButtonFalseActionPerformed
-
     private void btnCleanActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnCleanActionPerformed
-        // TODO add your handling code here:
+        textBuscar.setText(Constants.EMPTY);
     }//GEN-LAST:event_btnCleanActionPerformed
 
-    private void btnAgregarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        // TODO add your handling code here:
+    private void btnAgregarActionPerformed(ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnAgregarActionPerformed
+       DefaultTableModel defaultTableModel = (DefaultTableModel)tableProductos.getModel();
+       int indexSelect = tableProductos.getSelectedRow();
+
+       if (indexSelect >= 0) {
+           ListPrice listPriceSave = ListPrice.builder()
+                   .name(textNombre.getText())
+                   .price(Double.parseDouble(textPrecio.getText()))
+                   .description(textDescription.getText())
+                   .isActive(radioButtonTrue.isSelected())
+                   .fk_idProduct(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString()))
+                   .build();
+
+           log.info(listPriceSave.toString());
+           String result = logicalListPrice.addListPrice(listPriceSave);
+           JOptionPane.showMessageDialog(null, result);
+       } else {
+           JOptionPane.showMessageDialog(null, "Selecciona un producto, para asignar el precio.");
+       }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-        getAllDataListPrice();
+        //getAllDataListPrice();
         getAllDataProduct();
+        getAllDataListPrice();
+        enableButton(false);
         btnCancelar.setVisible(false);
     }//GEN-LAST:event_formAncestorAdded
 
@@ -393,6 +405,9 @@ public class ListPriceForm extends JPanel {
         int indexSelect = tableProductos.getSelectedRow();
         String nameProduct = defaultTableModel.getValueAt(indexSelect, 1).toString();
 
+        DefaultTableModel modelListPrice = (DefaultTableModel)tableListPrice.getModel();
+        modelListPrice.setRowCount(0);
+
         List<ListPrice> listPrices = logicalListPrice.findAllListPriceByProduct(
                 Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString()));
 
@@ -400,36 +415,81 @@ public class ListPriceForm extends JPanel {
             JOptionPane.showMessageDialog(
                 null, "No se tienen listas de precios para el producto: " + nameProduct);
         } else {
-            defaultTableModel.setRowCount(0);
+            modelListPrice.setRowCount(0);
 
             for (ListPrice listPrice : listPrices) {
-                defaultTableModel.addRow(new Object[]{
+                modelListPrice.addRow(new Object[]{
                         listPrice.getIdListPrice(),
                         listPrice.getName(),
                         listPrice.getPrice(),
                         listPrice.getDescription(),
                         listPrice.getIsActive(),
                         listPrice.getDateCreate(),
-                        listPrice.getDateUpdate()
+                        listPrice.getDateUpdate(),
+                        listPrice.getFk_idProduct()
                 });
             }
         }
     }//GEN-LAST:event_tableProductosMouseClicked
 
     private void tableListPriceMouseClicked(MouseEvent evt) {//GEN-FIRST:event_tableListPriceMouseClicked
-        // TODO add your handling code here:
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableListPrice.getModel();
+        int indexSelect = tableListPrice.getSelectedRow();
+        
+        textNombre.setText(defaultTableModel.getValueAt(indexSelect, 1).toString());
+        textPrecio.setText(defaultTableModel.getValueAt(indexSelect, 2).toString());
+        textDescription.setText(defaultTableModel.getValueAt(indexSelect, 3).toString());
+
+        if (defaultTableModel.getValueAt(indexSelect, 4).toString().equals(Constants.TRUE)) {
+            radioButtonTrue.setSelected(true);
+        } else {
+            radioButtonFalse.setSelected(true);
+        }
+
+        labelDateCreate.setText(defaultTableModel.getValueAt(indexSelect, 5).toString());
+        labelDateUpdate.setText(defaultTableModel.getValueAt(indexSelect, 6).toString());
+
+        listPriceItems.setIdListPrice(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString()));
+        enableButton(true);
+
     }//GEN-LAST:event_tableListPriceMouseClicked
 
+    private void enableButton(Boolean aBoolean) {
+        textNombre.setFocusable(true);
+        if (aBoolean) {
+            btnActualizar.setEnabled(true);
+            btnBorrar.setEnabled(true);
+            btnCancelar.setEnabled(true);
+            btnCancelar.setVisible(true);
+            btnAgregar.setEnabled(false);
+        } else {
+            btnActualizar.setEnabled(false);
+            btnBorrar.setEnabled(false);
+            btnCancelar.setEnabled(false);
+            btnCancelar.setVisible(false);
+            btnAgregar.setEnabled(true);
+        }
+    }
     private void btnActualizarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+        listPriceItems.setPrice(Double.parseDouble(textPrecio.getText()));
+        listPriceItems.setName(textNombre.getText());
+        listPriceItems.setDescription(textDescription.getText());
+        listPriceItems.setIsActive(radioButtonTrue.isSelected());
+
+        String result = logicalListPrice.updateListPrice(listPriceItems);
+        JOptionPane.showMessageDialog(null, result);
+        cleanForm();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnBorrarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        // TODO add your handling code here:
+        String result = logicalListPrice.deleteListPrice(listPriceItems);
+        JOptionPane.showMessageDialog(null, result);
+        cleanForm();
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void btnCancelarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        cleanForm();
+        enableButton(false);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void textBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textBuscarKeyReleased
@@ -440,7 +500,7 @@ public class ListPriceForm extends JPanel {
         SwingUtilities.invokeLater(() -> {
             try {
                 String countRegister;
-                List<ListPrice> listPricesResult = logicalListPrice.findAllListPriceByProduct(idProductFind);
+                List<ListPrice> listPricesResult = logicalListPrice.findAllListPrice();
                 DefaultTableModel defaultTableModel = (DefaultTableModel)tableListPrice.getModel();
                 defaultTableModel.setRowCount(0);
 
@@ -458,7 +518,7 @@ public class ListPriceForm extends JPanel {
 
             } catch (ParseException e) {
                 log.error("Ups!! Ocurrio un error al cargar los datos: " + e.getMessage());
-                JOptionPane.showMessageDialog(null, "Ocurrio un error, cauda: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Ocurrio un error, causa: " + e.getMessage());
             }
         });
 
@@ -485,7 +545,7 @@ public class ListPriceForm extends JPanel {
 
             } catch (ParseException e) {
                 log.error("Ups!! Ocurrio un error al cargar los datos: " + e.getMessage());
-                JOptionPane.showMessageDialog(null, "Ocurrio un error, cauda: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Ocurrio un error, causa: " + e.getMessage());
             }
         });
     }
@@ -514,12 +574,28 @@ public class ListPriceForm extends JPanel {
         }
     }
 
+    private void cleanForm() {
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableListPrice.getModel();
+        defaultTableModel.setRowCount(0);
+        textNombre.setText(Constants.EMPTY);
+        textDescription.setText(Constants.EMPTY);
+        textPrecio.setText(Constants.EMPTY);
+        textBuscar.setText(Constants.EMPTY);
+        labelDateUpdate.setText(Constants.FORMAT_LABEL_DATE);
+        labelDateCreate.setText(Constants.FORMAT_LABEL_DATE);
+        radioButtonTrue.setSelected(false);
+        radioButtonFalse.setSelected(false);
+        textNombre.setFocusable(true);
+        getAllDataListPrice();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnClean;
+    private javax.swing.ButtonGroup btnGroupState;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

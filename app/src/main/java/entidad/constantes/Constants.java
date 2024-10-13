@@ -10,6 +10,8 @@ public class Constants {
     public static String ERROR_SQL = "No fue posible hacer la transaccion, Ocurrio un error causa: ";
     public static String ERROR_APP = "Ocurrio un error: ";
     public static String NUMBER_REGISTER = "Numero de registros: ";
+    public static String TRUE = "true";
+    public static String FORMAT_LABEL_DATE = "-/-/-";
 
 
 }

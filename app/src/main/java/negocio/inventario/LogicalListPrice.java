@@ -28,4 +28,8 @@ public class LogicalListPrice {
     public List<ListPrice> findAllListPriceByProduct(int idProduct) throws ParseException {
         return accessListPrice.callFindListPrice(idProduct);
     }
+
+    public List<ListPrice> findAllListPrice() throws ParseException {
+        return accessListPrice.callFindAllListPrice();
+    }
 }
