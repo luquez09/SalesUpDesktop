@@ -38,13 +38,21 @@ public class LogicalListPrice {
 
     public String validateData(ListPrice listPrice) {
         String result = Constants.EMPTY;
-        if (!Objects.isNull(listPrice)) {
-            result = "Errores: \n";
-            result = listPrice.getPrice() == null ? result + "Precio es requerido\n" : Constants.EMPTY;
-            result = !(listPrice.getPrice() == null) && listPrice.getPrice() < 100 ?
-                    result + "Precio no valido\n" : result + Constants.EMPTY;
-            result = listPrice.getName().isEmpty() ? result + "Nombre es requerido\n" : result + Constants.EMPTY;
+
+        if (listPrice.getPrice() == null) {
+            result = result + "Precio es requerido\n";
         }
-        return result;
+        if (!(listPrice.getPrice() == null) && listPrice.getPrice() < 100) {
+            result = result + "Precio no valido\n";
+        }
+        if (listPrice.getName().isEmpty()) {
+            result = result + "Nombre es requerido\n";
+        }
+
+        if (result.equals(Constants.EMPTY)) {
+            return "201";
+        } else {
+            return "Error: \n" + result;
+        }
     }
 }

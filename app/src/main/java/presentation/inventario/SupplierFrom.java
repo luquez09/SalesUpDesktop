@@ -1,29 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package presentation.inventario;
 
+import entidad.constantes.Constants;
+import entidad.entitys.inventario.Product;
 import entidad.entitys.inventario.Supplier;
 import lombok.extern.log4j.Log4j2;
 import negocio.inventario.LogicalSupplier;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseListener;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
+import javax.swing.event.AncestorListener;
 
 /**
  *
  * @author ivanl
  */
 @Log4j2
-public class SupplierFrom extends javax.swing.JPanel implements ActionListener, MouseListener, ComponentListener {
+public class SupplierFrom extends javax.swing.JPanel implements ActionListener, MouseListener, AncestorListener {
     LogicalSupplier logicalSupplier = new LogicalSupplier();
-    Supplier supplier;
+    Supplier supplier = Supplier.builder().build();
+    List<Supplier> supplierList;
     /**
      * Creates new form SupplierFrom
      */
@@ -58,6 +58,9 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
         btnAgregar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+
+        addAncestorListener(this);
 
         jLabel1.setText("Nombre");
 
@@ -88,11 +91,10 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
             }
         });
         tableSupplier.addMouseListener(this);
-        tableSupplier.addComponentListener(this);
         jScrollPane1.setViewportView(tableSupplier);
         if (tableSupplier.getColumnModel().getColumnCount() > 0) {
-            tableSupplier.getColumnModel().getColumn(0).setMinWidth(1);
-            tableSupplier.getColumnModel().getColumn(0).setMaxWidth(1);
+            tableSupplier.getColumnModel().getColumn(0).setMinWidth(0);
+            tableSupplier.getColumnModel().getColumn(0).setMaxWidth(0);
             tableSupplier.getColumnModel().getColumn(1).setResizable(false);
             tableSupplier.getColumnModel().getColumn(2).setResizable(false);
             tableSupplier.getColumnModel().getColumn(3).setResizable(false);
@@ -109,14 +111,21 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("GESTION DE PROVEEDORES");
 
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/agregar.png"))); // NOI18N
         btnAgregar.setText("AGREGAR");
         btnAgregar.addActionListener(this);
 
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/actualizar-flecha.png"))); // NOI18N
         btnActualizar.setText("ACTUALIZAR");
         btnActualizar.addActionListener(this);
 
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/boton-menos.png"))); // NOI18N
         btnEliminar.setText("ELIMINAR");
         btnEliminar.addActionListener(this);
+
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancelar.png"))); // NOI18N
+        btnCancelar.setText("CANCELAR");
+        btnCancelar.addActionListener(this);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -126,28 +135,19 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel4)))
+                        .addComponent(textNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textNumberTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel5)))
+                        .addComponent(textNumberTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)))
+                        .addComponent(textDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnActualizar)
-                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -162,48 +162,54 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(textAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(74, 74, 74)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
-                .addGap(13, 13, 13)
+                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textNameSocial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(textNumberTwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel4)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel6)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(textNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(textNumberTwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(textDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
     }
 
@@ -212,35 +218,19 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
     public void actionPerformed(java.awt.event.ActionEvent evt) {
         if (evt.getSource() == btnAgregar) {
             try {
-                SupplierFrom.this.btnAgregarActionPerformed();
+                SupplierFrom.this.btnAgregarActionPerformed(evt);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
         else if (evt.getSource() == btnActualizar) {
-            SupplierFrom.this.btnActualizarActionPerformed();
+            SupplierFrom.this.btnActualizarActionPerformed(evt);
         }
         else if (evt.getSource() == btnEliminar) {
-            SupplierFrom.this.btnEliminarActionPerformed();
+            SupplierFrom.this.btnEliminarActionPerformed(evt);
         }
-    }
-
-    public void componentHidden(java.awt.event.ComponentEvent evt) {
-    }
-
-    public void componentMoved(java.awt.event.ComponentEvent evt) {
-    }
-
-    public void componentResized(java.awt.event.ComponentEvent evt) {
-    }
-
-    public void componentShown(java.awt.event.ComponentEvent evt) {
-        if (evt.getSource() == tableSupplier) {
-            try {
-                SupplierFrom.this.tableSupplierComponentShown();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
+        else if (evt.getSource() == btnCancelar) {
+            SupplierFrom.this.btnCancelarActionPerformed(evt);
         }
     }
 
@@ -260,11 +250,24 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
     }
 
     public void mouseReleased(java.awt.event.MouseEvent evt) {
+    }
+
+    public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+        if (evt.getSource() == SupplierFrom.this) {
+            SupplierFrom.this.formAncestorAdded(evt);
+        }
+    }
+
+    public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+    }
+
+    public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAgregarActionPerformed() throws ParseException {//GEN-FIRST:event_btnAgregarActionPerformed
-        supplier  = Supplier.builder().build();
+    private void btnAgregarActionPerformed(ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnAgregarActionPerformed
+        String result;
 
+        supplier  = Supplier.builder().build();
         supplier.setName(textName.getText());
         supplier.setName_social(textNameSocial.getText());
         supplier.setDescription(textDescription.getText());
@@ -272,18 +275,52 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
         supplier.setPhoneNumber1(textNumber.getText());
         supplier.setPhoneNumber2(textNumberTwo.getText());
 
-        logicalSupplier.addSupplier(supplier);
-        tableSupplierComponentShown();
+        result = logicalSupplier.validateSupplier(supplier);
+
+        if (result.isEmpty()) {
+            result = logicalSupplier.addSupplier(supplier);
+            JOptionPane.showMessageDialog(null, result);
+            cleanForm();
+        } else {
+            log.error("No se cumplieron las validaciones al guardar.");
+            JOptionPane.showMessageDialog(null, result);
+        }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
-    private void btnActualizarActionPerformed() {//GEN-FIRST:event_btnActualizarActionPerformed
+    private void btnActualizarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        String result = "Ocurrio un error no identificado, al Actualizar.";
         log.info("Actualizando categoria con ID: {}", supplier.getIdSupplier());
-        logicalSupplier.updateSupplier(supplier);
+        supplier.setName(textName.getText());
+        supplier.setName_social(textNameSocial.getText());
+        supplier.setPhoneNumber1(textNumber.getText());
+        supplier.setPhoneNumber2(textNumberTwo.getText());
+        supplier.setDireccion(textAddress.getText());
+        supplier.setDescription(textDescription.getText());
+
+        result = logicalSupplier.validateSupplier(supplier);
+
+        if (result.isEmpty()) {
+            result = logicalSupplier.updateSupplier(supplier);
+            JOptionPane.showConfirmDialog(null, result);
+            cleanForm();
+        } else {
+            JOptionPane.showConfirmDialog(null, result);
+        }
+
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnEliminarActionPerformed() {//GEN-FIRST:event_btnEliminarActionPerformed
-        log.info("Actualizando categoria con ID: {}", supplier.getIdSupplier());
-        logicalSupplier.deleteSupplier(supplier);
+    private void btnEliminarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        String result;
+        int resultQuestion = JOptionPane.showConfirmDialog(null, "Seguro de eliminar ?", "ELIMINANDO PROVEEDOR", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        log.info("Eliminando categoria con ID: {}", supplier.getIdSupplier());
+
+        if (resultQuestion == 0) {
+            result = logicalSupplier.deleteSupplier(supplier);
+            JOptionPane.showMessageDialog(null, result);
+            cleanForm();
+        } else {
+            log.info("Cancelacion de eliminacion del registro: " + supplier.getIdSupplier());
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void tableSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSupplierMouseClicked
@@ -304,30 +341,69 @@ public class SupplierFrom extends javax.swing.JPanel implements ActionListener, 
         supplier.setPhoneNumber1(defaultTableModel.getValueAt(indexSelect, 4).toString());
         supplier.setPhoneNumber2(defaultTableModel.getValueAt(indexSelect, 5).toString());
         supplier.setDescription(defaultTableModel.getValueAt(indexSelect, 6).toString());
+
+        btnCancelar.setVisible(true);
+        btnAgregar.setEnabled(false);
+        btnEliminar.setEnabled(true);
+        btnActualizar.setEnabled(true);
     }//GEN-LAST:event_tableSupplierMouseClicked
 
-    private void tableSupplierComponentShown() throws ParseException {//GEN-FIRST:event_tableSupplierComponentShown
-        List<Supplier> supplierList = logicalSupplier.findAllSupplier();
-        DefaultTableModel defaultTableModel = (DefaultTableModel)tableSupplier.getModel();
-        defaultTableModel.setRowCount(0);
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        cleanForm();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
-        for (Supplier supplierItem : supplierList) {
-            defaultTableModel.addRow(new Object[] {
-                    supplierItem.getIdSupplier(),
-                    supplierItem.getName(),
-                    supplierItem.getName_social(),
-                    supplierItem.getDireccion(),
-                    supplierItem.getPhoneNumber1(),
-                    supplierItem.getPhoneNumber2(),
-                    supplierItem.getDescription()
-            });
-        }
-    }//GEN-LAST:event_tableSupplierComponentShown
+    private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
+        cleanForm();
+    }//GEN-LAST:event_formAncestorAdded
 
+    private void cleanForm() {
+        textAddress.setText(Constants.EMPTY);
+        textNumberTwo.setText(Constants.EMPTY);
+        textDescription.setText(Constants.EMPTY);
+        textNameSocial.setText(Constants.EMPTY);
+        textName.setText(Constants.EMPTY);
+        textNumber.setText(Constants.EMPTY);
+        btnAgregar.setEnabled(true);
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnCancelar.setVisible(false);
+        textName.setFocusable(true);
+        getAllSupplier();
+    }
+
+    private void getAllSupplier() {
+        SwingUtilities.invokeLater(() -> {
+            DefaultTableModel defaultTableModel = (DefaultTableModel)tableSupplier.getModel();
+            defaultTableModel.setRowCount(0);
+
+            try {
+                supplierList = logicalSupplier.findAllSupplier();
+
+                if (supplierList.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Registremos Proveedores.");
+                } else {
+                    for (Supplier supplierResult : supplierList) {
+                        defaultTableModel.addRow(new Object[] {
+                                supplierResult.getIdSupplier(),
+                                supplierResult.getName(),
+                                supplierResult.getName_social(),
+                                supplierResult.getDireccion(),
+                                supplierResult.getPhoneNumber1(),
+                                supplierResult.getPhoneNumber2(),
+                                supplierResult.getDescription()
+                        });
+                    }
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

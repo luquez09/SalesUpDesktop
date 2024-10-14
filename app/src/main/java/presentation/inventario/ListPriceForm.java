@@ -541,7 +541,6 @@ public class ListPriceForm extends JPanel {
     private void getAllDataProduct() {
         SwingUtilities.invokeLater(() -> {
             try {
-                String countRegister;
                 listProductResult = logicalProduct.findAllProduct();
                 DefaultTableModel defaultTableModel = (DefaultTableModel)tableProductos.getModel();
                 defaultTableModel.setRowCount(0);
