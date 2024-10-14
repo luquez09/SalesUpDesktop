@@ -5,6 +5,7 @@ import entidad.constantes.Constants;
 import entidad.entitys.inventario.Category;
 import lombok.extern.log4j.Log4j2;
 import negocio.inventario.LogicalCategory;
+import negocio.utils.UtilsValidation;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -229,13 +230,25 @@ public class CategoryFrom extends javax.swing.JPanel {
     }//GEN-LAST:event_tableDataCategoryMouseClicked
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnAceptarActionPerformed
+        String result;
         Category category = Category.builder()
                 .name(textNameCategory.getText())
                 .description(textDescriptionCategory.getText())
                 .build();
-        String result = logicalCategory.addCategory(category);
-        formComponentShown();
-        JOptionPane.showMessageDialog(null, result);
+
+        result = UtilsValidation
+                .validateString(category.getName(), 100, "Nombre", true);
+        result = result.concat(UtilsValidation
+                .validateString(category.getDescription(), 100, "Description", false));
+        if (result.isEmpty()) {
+            result = logicalCategory.addCategory(category);
+            formComponentShown();
+            JOptionPane.showMessageDialog(null, result);
+        } else {
+            log.info(result);
+            JOptionPane.showMessageDialog(null, result);
+        }
+
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnActualizarActionPerformed
@@ -283,9 +296,12 @@ public class CategoryFrom extends javax.swing.JPanel {
                 lblCountRegister.setText(countRegister);
 
                 defaultTableModel.fireTableDataChanged();
+                btnActualizar.setEnabled(false);
+                btnEliminar.setEnabled(false);
             } catch (ParseException e) {
                 log.error("Ups!! Ocurrio un error al cargar los datos: " + e.getMessage());
-                JOptionPane.showMessageDialog(null, "Ocurrio un error, cauda: " + e.getMessage());
+                JOptionPane.showMessageDialog(null,
+                        "Ocurrio un error, cauda: " + e.getMessage());
             }
         });
     }
@@ -295,12 +311,14 @@ public class CategoryFrom extends javax.swing.JPanel {
             formComponentShown();
         } catch (ParseException ex) {
             log.error("Ups!! Ocurrio un error al cargar los datos: " + ex.getMessage());
+            JOptionPane.showConfirmDialog(null,
+                    "Ocurrio un error al cargar los datos:" + ex.getMessage());
         }
     }//GEN-LAST:event_tableDataCategoryComponentShown
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) throws ParseException {//GEN-FIRST:event_formAncestorAdded
        formComponentShown();
-        btnCancelar.setVisible(false);
+       btnCancelar.setVisible(false);
     }//GEN-LAST:event_formAncestorAdded
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -310,6 +328,8 @@ public class CategoryFrom extends javax.swing.JPanel {
 
     private void activeButton() {
         btnAceptar.setEnabled(true);
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
         btnCancelar.setVisible(false);
     }
 

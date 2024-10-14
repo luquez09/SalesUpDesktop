@@ -27,12 +27,15 @@ public class PaneInit extends JFrame {
             @Override
             public void selected(int index, int subIndex) {
                 log.info(body.getSize());
-                if(index == 1 && subIndex == 1) {
-                    showForm(new CategoryFrom());
-                } else if(index == 1 && subIndex == 2) {
-                    showForm(new SupplierFrom());
-                } else {
-                    showForm(new ListPriceForm());
+
+                if (index == 1) {
+                    switch (subIndex) {
+                        case 1 -> showForm(new CategoryFrom());
+                        case 2 -> showForm(new SupplierFrom());
+                        case 3 -> showForm(new ListPriceForm());
+                    }
+                } else if (index == 5) {
+                    System.exit(0);
                 }
             }
         });
