@@ -377,7 +377,7 @@ public class ListPriceForm extends JPanel {
        DefaultTableModel defaultTableModel = (DefaultTableModel)tableProductos.getModel();
        int indexSelect = tableProductos.getSelectedRow();
 
-       if (indexSelect >= 0) {
+       if (validateField()) {
            ListPrice listPriceSave = ListPrice.builder()
                    .name(textNombre.getText())
                    .price(Double.parseDouble(textPrecio.getText()))
@@ -389,8 +389,6 @@ public class ListPriceForm extends JPanel {
            log.info(listPriceSave.toString());
            String result = logicalListPrice.addListPrice(listPriceSave);
            JOptionPane.showMessageDialog(null, result);
-       } else {
-           JOptionPane.showMessageDialog(null, "Selecciona un producto, para asignar el precio.");
        }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -400,6 +398,7 @@ public class ListPriceForm extends JPanel {
         getAllDataListPrice();
         enableButton(false);
         btnCancelar.setVisible(false);
+        radioButtonTrue.setSelected(true);
     }//GEN-LAST:event_formAncestorAdded
 
     private void tableProductosMouseClicked(MouseEvent evt) throws ParseException {//GEN-FIRST:event_tableProductosMouseClicked
@@ -428,7 +427,8 @@ public class ListPriceForm extends JPanel {
                         listPrice.getIsActive(),
                         listPrice.getDateCreate(),
                         listPrice.getDateUpdate(),
-                        listPrice.getFk_idProduct()
+                        listPrice.getFk_idProduct(),
+                        nameProduct
                 });
             }
         }
@@ -478,15 +478,25 @@ public class ListPriceForm extends JPanel {
         listPriceItems.setDescription(textDescription.getText());
         listPriceItems.setIsActive(radioButtonTrue.isSelected());
 
-        String result = logicalListPrice.updateListPrice(listPriceItems);
-        JOptionPane.showMessageDialog(null, result);
-        cleanForm();
+        if (validateField()) {
+            String result = logicalListPrice.updateListPrice(listPriceItems);
+            JOptionPane.showMessageDialog(null, result);
+            cleanForm();
+        }
+
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnBorrarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        String result = logicalListPrice.deleteListPrice(listPriceItems);
-        JOptionPane.showMessageDialog(null, result);
-        cleanForm();
+        int option = JOptionPane.showConfirmDialog(null,
+                "Seguro de eliminar, lista de precio ?",
+                "ELIMINANDO LISTA",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (option == 0) {
+            String result = logicalListPrice.deleteListPrice(listPriceItems);
+            JOptionPane.showMessageDialog(null, result);
+            cleanForm();
+        }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void btnCancelarActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -501,7 +511,6 @@ public class ListPriceForm extends JPanel {
     private void getAllDataListPrice() {
         SwingUtilities.invokeLater(() -> {
             try {
-                String countRegister;
                 List<ListPrice> listPricesResult = logicalListPrice.findAllListPrice();
                 DefaultTableModel defaultTableModel = (DefaultTableModel)tableListPrice.getModel();
                 defaultTableModel.setRowCount(0);
@@ -592,6 +601,25 @@ public class ListPriceForm extends JPanel {
         radioButtonFalse.setSelected(false);
         textNombre.setFocusable(true);
         getAllDataListPrice();
+    }
+
+    private boolean validateField() {
+        int indexSelect = tableProductos.getSelectedRow();
+
+        ListPrice listPriceValidate = ListPrice.builder()
+                .name(textNombre.getText())
+                .price(textPrecio.getText().isEmpty() ? null : Double.parseDouble(textPrecio.getText()))
+                .description(textDescription.getText())
+                .build();
+
+        String result = logicalListPrice.validateData(listPriceValidate);
+        if (!result.equals(Constants.EMPTY) || indexSelect  == -1) {
+            result = result.concat("No se te olvide, selecciona un producto.");
+            JOptionPane.showMessageDialog(null, result);
+            return false;
+        }
+
+        return true;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
