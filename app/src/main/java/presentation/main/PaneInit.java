@@ -11,6 +11,7 @@ import presentation.main.win11.ScrollPaneWin11;
 import javax.swing.*;
 import lombok.extern.log4j.Log4j2;
 import presentation.inventario.CategoryFrom;
+import presentation.inventario.ProductForm;
 
 /**
  * @author IvanLuquez
@@ -34,6 +35,7 @@ public class PaneInit extends JFrame {
                         case 1 -> showForm(new CategoryFrom());
                         case 2 -> showForm(new SupplierFrom());
                         case 3 -> showForm(new ListPriceForm());
+                        case 4 -> showForm(new ProductForm());
                         case 5 -> showForm(new StorageForm());
                     }
                 } else if (index == 5) {
