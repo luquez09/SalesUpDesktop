@@ -17,5 +17,6 @@ public class ConstantLogger {
     public static final String LOG_ERROR_FIND_NOT_FOUND = "No existen registros.";
 
     public static final String LOG_ERROR_EXECUTE_SQL = "Error, al realizar la transaccion. Causa: {}";
+    public static final String LOG_ERROR_STATE_SQL = "Codigo stateSQL: {}";
 
 }

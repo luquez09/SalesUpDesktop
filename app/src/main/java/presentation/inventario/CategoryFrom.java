@@ -103,6 +103,10 @@ public class CategoryFrom extends javax.swing.JPanel {
             tableDataCategory.getColumnModel().getColumn(0).setMaxWidth(1);
             tableDataCategory.getColumnModel().getColumn(1).setResizable(false);
             tableDataCategory.getColumnModel().getColumn(2).setResizable(false);
+            tableDataCategory.getColumnModel().getColumn(3).setMinWidth(0);
+            tableDataCategory.getColumnModel().getColumn(3).setMaxWidth(0);
+            tableDataCategory.getColumnModel().getColumn(4).setMinWidth(0);
+            tableDataCategory.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
         textDescriptionCategory.setColumns(3);

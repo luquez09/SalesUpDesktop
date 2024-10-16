@@ -3,8 +3,6 @@ package negocio.utils;
 import entidad.constantes.Constants;
 import lombok.experimental.UtilityClass;
 
-import java.util.Objects;
-
 @UtilityClass
 public class UtilsValidation {
 

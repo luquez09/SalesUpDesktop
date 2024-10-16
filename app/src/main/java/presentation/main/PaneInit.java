@@ -1,6 +1,7 @@
 package presentation.main;
 
 import presentation.inventario.ListPriceForm;
+import presentation.inventario.StorageForm;
 import presentation.inventario.SupplierFrom;
 
 import java.awt.Component;
@@ -33,6 +34,7 @@ public class PaneInit extends JFrame {
                         case 1 -> showForm(new CategoryFrom());
                         case 2 -> showForm(new SupplierFrom());
                         case 3 -> showForm(new ListPriceForm());
+                        case 5 -> showForm(new StorageForm());
                     }
                 } else if (index == 5) {
                     System.exit(0);

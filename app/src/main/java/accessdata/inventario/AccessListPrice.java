@@ -2,6 +2,7 @@ package accessdata.inventario;
 
 import accessdata.utils.UtilsDate;
 import accessdata.utils.UtilsSql;
+import accessdata.utils.UtilsValidateCodeError;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
@@ -15,7 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class AccessListPrice {
     String abbreviation = "list";
     String abbreviationProduct = "prod";
 
-    public String callSaveListPrice(ListPrice listPrice) throws ParseException {
+    public String callSaveListPrice(ListPrice listPrice) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryCreate(SqlConstant.LIST_PRICE)
                      + NAME_FIELDS[1].concat(Constants.COMMA)
@@ -55,15 +55,16 @@ public class AccessListPrice {
                 if (response > Constants.ZERO) {
                     log.info(ConstantLogger.LOG_SUCCESS_QUERY_INSERT, listPrice);
                     result = SqlConstant.SUCCESS_PROCESS;
-                } else {
-                    log.error(ConstantLogger.LOG_ERROR_QUERY_INSERT, listPrice.getName(), response);
-                    result = SqlConstant.ERROR_PROCESS;
                 }
+
                 stmt.close();
                 ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.error(ConstantLogger.LOG_ERROR_QUERY_INSERT, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
         return result;
@@ -97,6 +98,9 @@ public class AccessListPrice {
             }
         } catch (SQLException e) {
             log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
         return result;
@@ -120,14 +124,17 @@ public class AccessListPrice {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
         return result;
     }
 
-    public List<ListPrice> callFindListPrice(int idProduct) throws ParseException {
+    public List<ListPrice> callFindListPrice(int idProduct) {
         List<ListPrice> listPriceList = new ArrayList<>();
 
         String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
@@ -155,13 +162,17 @@ public class AccessListPrice {
             rs.close();
             ConfigurationDb.closeConnection();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
         return listPriceList;
     }
 
-    public List<ListPrice> callFindAllListPrice() throws ParseException {
+    public List<ListPrice> callFindAllListPrice() {
         List<ListPrice> listPriceList = new ArrayList<>();
         String namesFields = String.join(Constants.COMMA, NAME_JOIN);
         String joinTable = "list.fk_idproduct = prod.idproduct";
@@ -191,8 +202,12 @@ public class AccessListPrice {
             rs.close();
             ConfigurationDb.closeConnection();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
         return listPriceList;
     }

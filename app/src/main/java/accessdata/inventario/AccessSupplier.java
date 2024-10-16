@@ -1,6 +1,7 @@
 package accessdata.inventario;
 
 import accessdata.utils.UtilsSql;
+import accessdata.utils.UtilsValidateCodeError;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
@@ -54,6 +55,9 @@ public class AccessSupplier {
             ConfigurationDb.closeConnection();
         } catch (SQLException e) {
             log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
         return result;
@@ -89,6 +93,9 @@ public class AccessSupplier {
             }
         } catch (SQLException e) {
             log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
         return result;
@@ -113,7 +120,10 @@ public class AccessSupplier {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -144,8 +154,12 @@ public class AccessSupplier {
             rs.close();
             ConfigurationDb.closeConnection();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
         return supplierList;
     }

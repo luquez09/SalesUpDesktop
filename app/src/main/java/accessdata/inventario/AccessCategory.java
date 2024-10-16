@@ -2,6 +2,7 @@ package accessdata.inventario;
 
 import accessdata.utils.UtilsDate;
 import accessdata.utils.UtilsSql;
+import accessdata.utils.UtilsValidateCodeError;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
@@ -56,7 +57,10 @@ public class AccessCategory {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -89,7 +93,10 @@ public class AccessCategory {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
         return result;
@@ -113,7 +120,10 @@ public class AccessCategory {
                 ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -158,8 +168,12 @@ public class AccessCategory {
                 result = result.concat(ex.getMessage());
             }
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_CONNECTION);
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
 
         return categoryFind;
@@ -168,6 +182,7 @@ public class AccessCategory {
     public List<Category> callAllCategory() throws ParseException {
         List<Category> categoryList = new ArrayList<>();
         String namesFields = String.join(Constants.COMMA, NAME_FIELDS);
+        String result = Constants.EMPTY;
 
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
@@ -189,8 +204,12 @@ public class AccessCategory {
             rs.close();
             ConfigurationDb.closeConnection();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            JOptionPane.showMessageDialog(null, (Constants.ERROR_SQL + e.getMessage()));
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
         return categoryList;
     }

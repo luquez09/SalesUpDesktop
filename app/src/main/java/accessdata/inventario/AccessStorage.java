@@ -1,6 +1,7 @@
 package accessdata.inventario;
 
 import accessdata.utils.UtilsSql;
+import accessdata.utils.UtilsValidateCodeError;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
@@ -47,7 +48,10 @@ public class AccessStorage {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -71,15 +75,15 @@ public class AccessStorage {
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.STORAGE);
                 result = SqlConstant.SUCCESS_PROCESS;
-            } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, Constants.ONE_NEG);
-                result = SqlConstant.ERROR_PROCESS;
             }
             stmt.close();
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -106,7 +110,10 @@ public class AccessStorage {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -134,8 +141,12 @@ public class AccessStorage {
             rs.close();
             ConfigurationDb.closeConnection();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            JOptionPane.showMessageDialog(null, Constants.ERROR_SQL + e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
         return storeList;
     }
