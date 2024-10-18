@@ -26,4 +26,12 @@ public class Supplier {
     private String phoneNumber2;
     private String name_social;
     private String description;
+
+    public String toString() {
+        return name + " - " + name_social;
+    }
+
+    public boolean equals(Object obj) {
+        return this.idSupplier == ((Supplier) obj).getIdSupplier();
+    }
 }

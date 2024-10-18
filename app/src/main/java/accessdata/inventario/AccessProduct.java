@@ -25,8 +25,9 @@ import java.util.Objects;
 @Log4j2
 public class AccessProduct {
 
-    private final String[] NAME_FIELDS = {"idproduct", "name_product", "description", "path_image", "quantity",
-                                          "date_create", "date_update", "fk_idcategory", "fk_idsupplier", "fk_idstorage"};
+    private final String[] NAME_FIELDS =
+            {"idproduct", "name_product", "description", "path_image", "quantity", "date_create", "date_update",
+             "fk_idcategory", "fk_idsupplier", "fk_idstorage", "code"};
     String result = "Error: ";
     String abbreviation = "prod";
 
@@ -41,8 +42,9 @@ public class AccessProduct {
                 + NAME_FIELDS[6].concat(Constants.COMMA)
                 + NAME_FIELDS[7].concat(Constants.COMMA)
                 + NAME_FIELDS[8].concat(Constants.COMMA)
-                + NAME_FIELDS[9]
-                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                + NAME_FIELDS[9].concat(Constants.COMMA)
+                + NAME_FIELDS[10]
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
                 stmt.setString(1, product.getName());
                 stmt.setString(2, product.getDescription());
@@ -52,14 +54,14 @@ public class AccessProduct {
                 stmt.setTimestamp(6, Timestamp.valueOf(UtilsDate.getDateNow()));
                 stmt.setInt(7, product.getFk_category());
                 stmt.setInt(8, product.getFk_supplier());
+                stmt.setInt(9, product.getFk_storage());
+                stmt.setString(10, product.getCodeProduct());
 
                 if (stmt.executeUpdate() > Constants.ZERO) {
                     log.info(ConstantLogger.LOG_SUCCESS_QUERY_INSERT, SqlConstant.PRODUCT);
                     result = SqlConstant.SUCCESS_PROCESS;
-                } else {
-                    log.info(ConstantLogger.LOG_ERROR_QUERY_INSERT, Constants.ONE_NEG);
-                    result = SqlConstant.ERROR_PROCESS;
                 }
+
                 stmt.close();
                 ConfigurationDb.closeConnection();
 
@@ -218,6 +220,7 @@ public class AccessProduct {
                     .fk_category(rs.getInt(8))
                     .fk_supplier(rs.getInt(9))
                     .fk_storage(rs.getInt(10))
+                    .codeProduct(rs.getString(11))
                     .build();
                 productList.add(productFind);
             }

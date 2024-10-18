@@ -63,7 +63,6 @@ public class AccessListPrice {
         } catch (SQLException e) {
             log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
             log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
-
             result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }

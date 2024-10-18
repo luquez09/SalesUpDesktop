@@ -26,6 +26,7 @@ public class Product {
     private String name;
     private String description;
     private String pathImage;
+    private String codeProduct;
     private long quantity;
     private LocalDateTime dateCreate;
     private LocalDateTime dateUpdate;

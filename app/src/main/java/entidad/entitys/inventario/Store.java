@@ -25,4 +25,12 @@ public class Store {
     private String name;
     private String description;
     private String ubication;
+
+    public String toString() {
+        return name;
+    }
+
+    public boolean equals(Object obj) {
+        return this.idStore == ((Store) obj).getIdStore();
+    }
 }

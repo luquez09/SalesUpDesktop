@@ -31,8 +31,6 @@ public class ListPriceForm extends JPanel {
     private final LogicalProduct logicalProduct = new LogicalProduct();
     private ListPrice listPriceItems = ListPrice.builder().build();
     private List<Product> listProductResult = new ArrayList<>();
-    private String searchProduct;
-    private int idProductFind;
     /**
      * Creates new form ListPriceForm
      */

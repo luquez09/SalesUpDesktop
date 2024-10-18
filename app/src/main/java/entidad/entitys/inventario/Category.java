@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author ivanl
@@ -25,5 +26,13 @@ public class Category {
     private String description;
     private LocalDateTime dateCreate;
     private LocalDateTime dateUpdate;
+
+    public String toString() {
+        return name;
+    }
+
+    public boolean equals(Object obj) {
+        return this.idCategory == ((Category) obj).getIdCategory();
+    }
     
 }
