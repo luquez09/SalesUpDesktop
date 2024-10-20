@@ -13,7 +13,6 @@ import java.util.Objects;
 /**
  * @author ivanl
  */
-@Data
 @Getter
 @Setter
 @NoArgsConstructor

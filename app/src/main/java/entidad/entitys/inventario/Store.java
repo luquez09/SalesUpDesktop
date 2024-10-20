@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
  * @since 22/09/2024
  * @version 1.0
  */
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
