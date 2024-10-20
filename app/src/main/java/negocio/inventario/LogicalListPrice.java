@@ -1,13 +1,11 @@
 package negocio.inventario;
 
 import accessdata.inventario.AccessListPrice;
+import accessdata.utils.UtilsValidateFields;
 import entidad.constantes.Constants;
 import entidad.entitys.inventario.ListPrice;
-
-import java.awt.*;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author ivanl
@@ -16,16 +14,30 @@ public class LogicalListPrice {
 
     AccessListPrice accessListPrice = new AccessListPrice();
 
-    public String addListPrice(ListPrice listPrice) throws ParseException {
-        return accessListPrice.callSaveListPrice(listPrice);
+    public String addListPrice(ListPrice listPrice) {
+        String result = validateData(listPrice);
+
+        if (result.isEmpty()) {
+            return accessListPrice.callSaveListPrice(listPrice);
+        } else {
+            result += Constants.ERROR.concat(Constants.BREAK_LINE);
+            return result;
+        }
     }
 
     public String updateListPrice(ListPrice listPrice) {
-        return accessListPrice.callUpdateListPrice(listPrice);
+        String result = validateData(listPrice);
+
+        if (result.isEmpty()) {
+            return accessListPrice.callUpdateListPrice(listPrice);
+        } else {
+            result += Constants.ERROR.concat(Constants.BREAK_LINE);
+            return result;
+        }
     }
 
-    public String deleteListPrice(ListPrice listPrice) {
-        return accessListPrice.callDeleteListPrice(listPrice);
+    public String deleteListPrice(int idListPrice) {
+        return accessListPrice.callDeleteListPrice(idListPrice);
     }
 
     public List<ListPrice> findAllListPriceByProduct(int idProduct) throws ParseException {
@@ -37,22 +49,11 @@ public class LogicalListPrice {
     }
 
     public String validateData(ListPrice listPrice) {
-        String result = Constants.EMPTY;
+        String result;
 
-        if (listPrice.getPrice() == null) {
-            result = result + "Precio es requerido\n";
-        }
-        if (!(listPrice.getPrice() == null) && listPrice.getPrice() < 100) {
-            result = result + "Precio no valido\n";
-        }
-        if (listPrice.getName().isEmpty()) {
-            result = result + "Nombre es requerido\n";
-        }
+        result = UtilsValidateFields.validateObligatory(100, "Nombre lsita", listPrice.getName());
+        result += UtilsValidateFields.validateString(200, "Descripcion", listPrice.getDescription());
 
-        if (result.equals(Constants.EMPTY)) {
-            return "201";
-        } else {
-            return "Error: \n" + result;
-        }
+        return result;
     }
 }

@@ -105,20 +105,18 @@ public class AccessListPrice {
         return result;
     }
 
-    public String callDeleteListPrice(ListPrice listPrice) {
+    public String callDeleteListPrice(int idListPrice) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.LIST_PRICE, abbreviation)
                  + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
-            stmt.setInt(1, listPrice.getIdListPrice());
+            stmt.setInt(1, idListPrice);
 
             if (stmt.executeUpdate() > Constants.ZERO) {
-                log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE, listPrice.toString());
+                log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE);
                 result = SqlConstant.SUCCESS_DELETE;
-            } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, listPrice.toString());
-                result = SqlConstant.ERROR_DELETE;
             }
+
             stmt.close();
             ConfigurationDb.closeConnection();
 

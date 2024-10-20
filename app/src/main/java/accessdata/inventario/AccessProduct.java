@@ -6,6 +6,7 @@ import accessdata.utils.UtilsValidateCodeError;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
+import entidad.entitys.inventario.ListPrice;
 import entidad.entitys.inventario.Product;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
@@ -24,6 +25,8 @@ import java.util.Objects;
 
 @Log4j2
 public class AccessProduct {
+
+    private AccessListPrice accessListPrice = new AccessListPrice();
 
     private final String[] NAME_FIELDS =
             {"idproduct", "name_product", "description", "path_image", "quantity", "date_create", "date_update",
@@ -57,9 +60,16 @@ public class AccessProduct {
                 stmt.setInt(9, product.getFk_storage());
                 stmt.setString(10, product.getCodeProduct());
 
-                if (stmt.executeUpdate() > Constants.ZERO) {
+                ResultSet resultSet = stmt.executeQuery();
+
+                if (resultSet.next()) {
+                    result = accessListPrice.callSaveListPrice(this.addPriceDefault(resultSet, product));
+                    result = SqlConstant.SUCCESS_PROCESS
+                            .concat("Producto")
+                            .concat(Constants.BREAK_LINE)
+                            .concat(result)
+                            .concat("Precio.");
                     log.info(ConstantLogger.LOG_SUCCESS_QUERY_INSERT, SqlConstant.PRODUCT);
-                    result = SqlConstant.SUCCESS_PROCESS;
                 }
 
                 stmt.close();
@@ -74,6 +84,16 @@ public class AccessProduct {
             }
 
         return result;
+    }
+
+    private ListPrice addPriceDefault(ResultSet resultSet, Product product) throws SQLException {
+        return ListPrice.builder()
+                .name("Precio normal")
+                .price(product.getPriceDefault())
+                .description("Precio normal de venta.")
+                .isActive(true)
+                .fk_idProduct(resultSet.getInt("idproduct"))
+                .build();
     }
 
     public String callUpdateProduct(Product product) {
@@ -105,10 +125,8 @@ public class AccessProduct {
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.PRODUCT);
                 result = SqlConstant.SUCCESS_UPDATE;
-            } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, Constants.ONE_NEG);
-                result = SqlConstant.ERROR_UPDATE;
             }
+
             stmt.close();
             ConfigurationDb.closeConnection();
 

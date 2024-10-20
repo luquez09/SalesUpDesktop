@@ -28,6 +28,7 @@ public class Product {
     private String pathImage;
     private String codeProduct;
     private long quantity;
+    private Double priceDefault;
     private LocalDateTime dateCreate;
     private LocalDateTime dateUpdate;
     private Integer fk_category;
