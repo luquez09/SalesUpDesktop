@@ -33,9 +33,6 @@ public class AccessRole {
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_INSERT, SqlConstant.ROLE);
                 result = SqlConstant.SUCCESS_PROCESS;
-            } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_INSERT, Constants.ONE_NEG);
-                result = SqlConstant.ERROR_PROCESS;
             }
             stmt.close();
             ConfigurationDb.closeConnection();
