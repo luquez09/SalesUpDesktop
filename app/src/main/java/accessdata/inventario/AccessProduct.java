@@ -141,19 +141,16 @@ public class AccessProduct {
         return result;
     }
 
-    public String callDeleteProduct(Product product) {
+    public String callDeleteProduct(int product) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.PRODUCT, abbreviation)
                  + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
-                stmt.setInt(1, product.getIdProduct());
+                stmt.setInt(1, product);
 
                 if (stmt.executeUpdate() > Constants.ZERO) {
                     log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE, SqlConstant.PRODUCT);
                     result = SqlConstant.SUCCESS_DELETE;
-                } else {
-                    log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, SqlConstant.PRODUCT);
-                    result = SqlConstant.ERROR_DELETE;
                 }
                 stmt.close();
                 ConfigurationDb.closeConnection();

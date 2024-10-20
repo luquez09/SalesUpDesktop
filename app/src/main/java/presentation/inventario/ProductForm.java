@@ -2,24 +2,19 @@ package presentation.inventario;
 
 import entidad.constantes.Constants;
 import entidad.entitys.inventario.Category;
-import entidad.entitys.inventario.ListPrice;
 import entidad.entitys.inventario.Product;
 import entidad.entitys.inventario.Store;
 import entidad.entitys.inventario.Supplier;
 import lombok.extern.log4j.Log4j2;
 import negocio.inventario.LogicalCategory;
-import negocio.inventario.LogicalListPrice;
 import negocio.inventario.LogicalProduct;
 import negocio.inventario.LogicalStorage;
 import negocio.inventario.LogicalSupplier;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Objects;
 
 /**
  *
@@ -29,11 +24,11 @@ import java.util.regex.Pattern;
 public class ProductForm extends javax.swing.JPanel {
     private final LogicalCategory logicalCategory = new LogicalCategory();
     private final LogicalProduct logicalProduct = new LogicalProduct();
-    private final LogicalListPrice logicalListPrice = new LogicalListPrice();
     private final LogicalStorage logicalStorage = new LogicalStorage();
     private final LogicalSupplier logicalSupplier = new LogicalSupplier();
 
-    private ListPrice listPriceItems = ListPrice.builder().build();
+    private int idNumberProduct;
+    private boolean isSelectProduct = false;
 
     /**
      * Creates new form ProductForm
@@ -125,12 +120,19 @@ public class ProductForm extends javax.swing.JPanel {
 
             },
             new String [] {
-                "id", "Nombre", "Cantidad", "Description", "rutaimagen", "Categoria", "proveedor", "almacen"
+                "id", "Nombre", "Cantidad", "Descripcion", "rutaimagen", "categoria", "proveedor", "almacen", "code"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                true, false, true, false, true, true, true, true
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                true, false, true, false, true, true, true, true, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -156,6 +158,8 @@ public class ProductForm extends javax.swing.JPanel {
             tableProduct.getColumnModel().getColumn(6).setMaxWidth(0);
             tableProduct.getColumnModel().getColumn(7).setMinWidth(0);
             tableProduct.getColumnModel().getColumn(7).setMaxWidth(0);
+            tableProduct.getColumnModel().getColumn(8).setMinWidth(0);
+            tableProduct.getColumnModel().getColumn(8).setMaxWidth(0);
         }
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -204,7 +208,12 @@ public class ProductForm extends javax.swing.JPanel {
         btnEliminar.setText("ELIMINAR");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
+                try {
+                    btnEliminarActionPerformed(evt);
+                } catch (ParseException e) {
+                    log.error("Error: {}", e.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+                }
             }
         });
 
@@ -360,9 +369,10 @@ public class ProductForm extends javax.swing.JPanel {
         getAllCategory();
         getAllStorage();
         getAllSupplier();
-        btnActualizar.setEnabled(false);
+        getAllDataProduct();
         btnAgregar.setEnabled(true);
-        btnEliminar.setVisible(false);
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
         btnCancelar.setVisible(false);
     }//GEN-LAST:event_formAncestorAdded
 
@@ -388,16 +398,42 @@ public class ProductForm extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnEliminarActionPerformed
+        String result = logicalProduct.deleteProduct(idNumberProduct);
+        log.info("Resultado Producto update: {}", result );
+        JOptionPane.showMessageDialog(null, result);
+
+        if (!result.contains(Constants.ERROR)) {
+            cleanFieldTextForm();
+            enableButtonForm();
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        cleanFieldTextForm();
+        enableButtonForm();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tableProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductMouseClicked
-        // TODO add your handling code here:
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableProduct.getModel();
+        int indexSelect = tableProduct.getSelectedRow();
+
+        idNumberProduct = Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString());
+
+        textNombre.setText(defaultTableModel.getValueAt(indexSelect, 1).toString());
+        spinnerCantidad.setValue(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 2).toString()));
+        textDescripcion.setText(defaultTableModel.getValueAt(indexSelect, 3).toString());
+        textImagen.setText(defaultTableModel.getValueAt(indexSelect, 4).toString());
+        textCodeProduct.setText(defaultTableModel.getValueAt(indexSelect, 8).toString());
+
+        cmbBoxCategoria.setSelectedItem(new
+                Category(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 5).toString())));
+        cmbBoxAlmacen.setSelectedItem(new
+                Store(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 6).toString())));
+        cmbBoxProveedor.setSelectedItem(new
+                Supplier(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 7).toString())));
+
+        if (!isSelectProduct) enableButtonForm();
     }//GEN-LAST:event_tableProductMouseClicked
 
     private void textNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNombreKeyReleased
@@ -485,7 +521,6 @@ public class ProductForm extends javax.swing.JPanel {
             log.error("Error: {}", e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al cargar los datos: " + e.getMessage());
         }
-
     }
 
     public static String splitAndConcatenate(String input) {
@@ -519,19 +554,50 @@ public class ProductForm extends javax.swing.JPanel {
             .build();
     }
 
+    private void getAllDataProduct() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                List<Product> listPricesResult = logicalProduct.findAllProduct();
+                DefaultTableModel defaultTableModel = (DefaultTableModel)tableProduct.getModel();
+                defaultTableModel.setRowCount(0);
+
+                for (Product product : listPricesResult) {
+                    log.info(product.getName());
+                    defaultTableModel.addRow(new Object[] {
+                        product.getIdProduct(),
+                        product.getName(),
+                        product.getQuantity(),
+                        product.getDescription(),
+                        product.getPathImage(),
+                        product.getFk_category(),
+                        product.getFk_supplier(),
+                        product.getFk_storage(),
+                        Objects.isNull(product.getCodeProduct()) ? Constants.EMPTY : product.getCodeProduct()
+                    });
+                }
+            } catch (ParseException e) {
+                log.error("Error al consultar productos: {}", e.getMessage());
+                JOptionPane.showMessageDialog(null, "Ocurrio un error, causa: " + e.getMessage());
+            }
+        });
+
+    }
+
     private void cleanFieldTextForm() {
         textNombre.setText(Constants.EMPTY);
         spinnerCantidad.setValue(1);
         textCodeProduct.setText(Constants.EMPTY);
         textPrecio.setText(Constants.EMPTY);
         textDescripcion.setText(Constants.EMPTY);
+        isSelectProduct = true;
     }
 
     private void enableButtonForm() {
-        btnActualizar.setEnabled(btnActualizar.isEnabled());
-        btnAgregar.setEnabled(btnAgregar.isEnabled());
-        btnEliminar.setVisible(btnEliminar.isEnabled());
-        btnCancelar.setVisible(btnCancelar.isVisible());
+        btnActualizar.setEnabled(!btnActualizar.isEnabled());
+        btnEliminar.setEnabled(!btnEliminar.isEnabled());
+        btnAgregar.setEnabled(!btnAgregar.isEnabled());
+        btnCancelar.setVisible(!btnCancelar.isVisible());
+        isSelectProduct = false;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

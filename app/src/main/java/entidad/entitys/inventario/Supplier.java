@@ -27,6 +27,10 @@ public class Supplier {
     private String name_social;
     private String description;
 
+    public Supplier(Integer idSupplier) {
+        this.idSupplier = idSupplier;
+    }
+
     public String toString() {
         return name + " - " + name_social;
     }

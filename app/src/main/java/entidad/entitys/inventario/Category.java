@@ -27,12 +27,18 @@ public class Category {
     private LocalDateTime dateCreate;
     private LocalDateTime dateUpdate;
 
+    public Category(int idCategory) {
+        this.idCategory = idCategory;
+    }
+
+    @Override
     public String toString() {
         return name;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        return this.idCategory == ((Category) obj).getIdCategory();
+        return Objects.equals(this.idCategory, ((Category) obj).getIdCategory());
     }
     
 }

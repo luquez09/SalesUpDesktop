@@ -32,7 +32,7 @@ public class LogicalProduct {
         }
     }
 
-    public String deleteProduct(Product product) throws ParseException {
+    public String deleteProduct(int product) throws ParseException {
         return accessProduct.callDeleteProduct(product);
     }
 

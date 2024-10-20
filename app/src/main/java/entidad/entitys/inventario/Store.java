@@ -26,6 +26,10 @@ public class Store {
     private String description;
     private String ubication;
 
+    public Store(Integer idStore) {
+        this.idStore = idStore;
+    }
+
     public String toString() {
         return name;
     }
