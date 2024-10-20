@@ -413,6 +413,7 @@
     <Component class="javax.swing.JTextField" name="textImagen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ruta imagen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">

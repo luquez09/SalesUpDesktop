@@ -108,7 +108,8 @@ public class AccessProduct {
                  + NAME_FIELDS[6].concat(SqlConstant.VALUE).concat(Constants.COMMA)
                  + NAME_FIELDS[7].concat(SqlConstant.VALUE).concat(Constants.COMMA)
                  + NAME_FIELDS[8].concat(SqlConstant.VALUE).concat(Constants.COMMA)
-                 + NAME_FIELDS[9].concat(SqlConstant.VALUE)
+                 + NAME_FIELDS[9].concat(SqlConstant.VALUE).concat(Constants.COMMA)
+                 + NAME_FIELDS[10].concat(SqlConstant.VALUE)
                  + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
             stmt.setString(1, product.getName());
@@ -120,21 +121,23 @@ public class AccessProduct {
             stmt.setInt(7, product.getFk_category());
             stmt.setInt(8, product.getFk_supplier());
             stmt.setInt(9, product.getFk_storage());
-            stmt.setInt(10, product.getIdProduct());
+            stmt.setString(10, product.getCodeProduct());
+            stmt.setInt(11, product.getIdProduct());
 
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.PRODUCT);
-                result = SqlConstant.SUCCESS_UPDATE;
+                result = SqlConstant.SUCCESS_UPDATE.concat(Constants.BREAK_LINE);
             }
 
             stmt.close();
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
-            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage().concat(Constants.BREAK_LINE));
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState().concat(Constants.BREAK_LINE));
 
-            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()))
+                    .concat(Constants.BREAK_LINE);
             result = result.concat(e.getMessage());
         }
 

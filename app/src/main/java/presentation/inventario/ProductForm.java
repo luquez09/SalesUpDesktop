@@ -27,7 +27,7 @@ public class ProductForm extends javax.swing.JPanel {
     private final LogicalStorage logicalStorage = new LogicalStorage();
     private final LogicalSupplier logicalSupplier = new LogicalSupplier();
 
-    private int idNumberProduct;
+    private int idNumberProduct = 0;
     private boolean isSelectProduct = false;
 
     /**
@@ -220,6 +220,7 @@ public class ProductForm extends javax.swing.JPanel {
         jLabel10.setText("Imagen");
 
         textImagen.setText("Ruta imagen");
+        textImagen.setEnabled(false);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/signo-de-interrogacion.png"))); // NOI18N
         jLabel11.setToolTipText("Ingresar letras o caracteres especiales, puede causar errores.");
@@ -384,6 +385,7 @@ public class ProductForm extends javax.swing.JPanel {
         if (!result.contains(Constants.ERROR)) {
             cleanFieldTextForm();
             enableButtonForm();
+            getAllDataProduct();
         }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -395,6 +397,7 @@ public class ProductForm extends javax.swing.JPanel {
         if (!result.contains(Constants.ERROR)) {
             cleanFieldTextForm();
             enableButtonForm();
+            getAllDataProduct();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -406,12 +409,13 @@ public class ProductForm extends javax.swing.JPanel {
         if (!result.contains(Constants.ERROR)) {
             cleanFieldTextForm();
             enableButtonForm();
+            getAllDataProduct();
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        cleanFieldTextForm();
         enableButtonForm();
+        cleanFieldTextForm();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tableProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductMouseClicked
@@ -427,11 +431,11 @@ public class ProductForm extends javax.swing.JPanel {
         textCodeProduct.setText(defaultTableModel.getValueAt(indexSelect, 8).toString());
 
         cmbBoxCategoria.setSelectedItem(new
-                Category(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 5).toString())));
+                Category(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 5).toString())));
         cmbBoxAlmacen.setSelectedItem(new
-                Store(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 6).toString())));
+                Store(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 7).toString())));
         cmbBoxProveedor.setSelectedItem(new
-                Supplier(Integer.valueOf(defaultTableModel.getValueAt(indexSelect, 7).toString())));
+                Supplier(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 6).toString())));
 
         if (!isSelectProduct) enableButtonForm();
     }//GEN-LAST:event_tableProductMouseClicked
@@ -543,6 +547,7 @@ public class ProductForm extends javax.swing.JPanel {
         int idStore = cmbBoxAlmacen.getItemAt(cmbBoxAlmacen.getSelectedIndex()).getIdStore();
 
         return Product.builder()
+            .idProduct(idNumberProduct)
             .name(textNombre.getText())
             .description(textDescripcion.getText())
             .quantity(Long.valueOf(spinnerCantidad.getValue().toString()))
@@ -580,7 +585,6 @@ public class ProductForm extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Ocurrio un error, causa: " + e.getMessage());
             }
         });
-
     }
 
     private void cleanFieldTextForm() {
@@ -589,7 +593,7 @@ public class ProductForm extends javax.swing.JPanel {
         textCodeProduct.setText(Constants.EMPTY);
         textPrecio.setText(Constants.EMPTY);
         textDescripcion.setText(Constants.EMPTY);
-        isSelectProduct = true;
+        isSelectProduct = false;
     }
 
     private void enableButtonForm() {
@@ -597,7 +601,7 @@ public class ProductForm extends javax.swing.JPanel {
         btnEliminar.setEnabled(!btnEliminar.isEnabled());
         btnAgregar.setEnabled(!btnAgregar.isEnabled());
         btnCancelar.setVisible(!btnCancelar.isVisible());
-        isSelectProduct = false;
+        isSelectProduct = true;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
