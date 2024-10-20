@@ -71,12 +71,13 @@ public class ProductForm extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         textCodeProduct = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
+        labelPrecio = new javax.swing.JLabel();
+        labeliconPrecio = new javax.swing.JLabel();
         textPrecio = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 formAncestorAdded(evt);
@@ -264,21 +265,16 @@ public class ProductForm extends javax.swing.JPanel {
         textCodeProduct.setBackground(new java.awt.Color(204, 204, 204));
         textCodeProduct.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-        jLabel9.setText("Precio por defecto");
+        labelPrecio.setText("Precio por defecto");
+
+        labeliconPrecio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labeliconPrecio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/signo-de-interrogacion.png"))); // NOI18N
+        labeliconPrecio.setToolTipText("No es requerido, pero es una forma rapida de agregar un precio predeterminado.");
+        labeliconPrecio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labeliconPrecio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         textPrecio.setBackground(new java.awt.Color(204, 204, 204));
         textPrecio.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        textPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                textPrecioKeyTyped(evt);
-            }
-        });
-
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/signo-de-interrogacion.png"))); // NOI18N
-        jLabel13.setToolTipText("No es requerido, pero es una forma rapida de agregar un precio predeterminado.");
-        jLabel13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -298,9 +294,9 @@ public class ProductForm extends javax.swing.JPanel {
                                 .addGap(6, 6, 6)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel9)
+                                        .addComponent(labelPrecio)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel13)
+                                        .addComponent(labeliconPrecio)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel10)
                                         .addGap(149, 149, 149)
@@ -382,14 +378,17 @@ public class ProductForm extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(textPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(textImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(cmbBoxAlmacen))
+                    .addComponent(labelPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labeliconPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(textImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbBoxAlmacen)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
@@ -485,7 +484,7 @@ public class ProductForm extends javax.swing.JPanel {
                 Store(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 7).toString())));
         cmbBoxProveedor.setSelectedItem(new
                 Supplier(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 6).toString())));
-
+        textPrecio.setEnabled(false);
         if (!isSelectProduct) enableButtonForm();
     }//GEN-LAST:event_tableProductMouseClicked
 
@@ -493,14 +492,6 @@ public class ProductForm extends javax.swing.JPanel {
         String result = splitAndConcatenate(textNombre.getText());
         textCodeProduct.setText(result);
     }//GEN-LAST:event_textNombreKeyReleased
-
-    private void textPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textPrecioKeyTyped
-        char c = evt.getKeyChar();
-
-        if (!Character.isDigit(c)) {
-            evt.consume();
-        }
-    }//GEN-LAST:event_textPrecioKeyTyped
 
     private void spinnerCantidadStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnerCantidadStateChanged
        log.info("Evento");
@@ -582,7 +573,6 @@ public class ProductForm extends javax.swing.JPanel {
         for (String word : words) {
             if (!word.isEmpty()) {
                 char firstChar = word.charAt(0);
-                String remainingChars = word.substring(1);
                 result.append(firstChar);
             }
         }
@@ -643,6 +633,7 @@ public class ProductForm extends javax.swing.JPanel {
         textPrecio.setText(Constants.EMPTY);
         textDescripcion.setText(Constants.EMPTY);
         isSelectProduct = false;
+        textPrecio.setEnabled(true);
     }
 
     private void enableButtonForm() {
@@ -665,7 +656,6 @@ public class ProductForm extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -673,8 +663,9 @@ public class ProductForm extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelPrecio;
+    private javax.swing.JLabel labeliconPrecio;
     private javax.swing.JSpinner spinnerCantidad;
     private javax.swing.JTable tableProduct;
     private javax.swing.JTextField textCodeProduct;

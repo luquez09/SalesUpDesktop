@@ -10,6 +10,9 @@
         <EmptyBorder/>
       </Border>
     </Property>
+    <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+      <Color id="Default Cursor"/>
+    </Property>
   </Properties>
   <Events>
     <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="formAncestorAdded"/>
@@ -44,9 +47,9 @@
                               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                      <Component id="labelPrecio" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
+                                      <Component id="labeliconPrecio" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
                                       <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="149" max="-2" attributes="0"/>
@@ -154,16 +157,21 @@
               <Group type="103" groupAlignment="3" max="-2" attributes="0">
                   <Component id="jLabel10" alignment="3" max="32767" attributes="0"/>
                   <Component id="jLabel6" alignment="3" max="32767" attributes="0"/>
-                  <Component id="jLabel9" alignment="3" max="32767" attributes="0"/>
-                  <Component id="jLabel13" max="32767" attributes="0"/>
+                  <Component id="labelPrecio" alignment="3" max="32767" attributes="0"/>
+                  <Component id="labeliconPrecio" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="textPrecio" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                      <Component id="textImagen" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="textImagen" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="cmbBoxAlmacen" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
-                  <Component id="cmbBoxAlmacen" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="textPrecio" min="-2" pref="30" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -567,9 +575,22 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel9">
+    <Component class="javax.swing.JLabel" name="labelPrecio">
       <Properties>
         <Property name="text" type="java.lang.String" value="Precio por defecto"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labeliconPrecio">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/icons/signo-de-interrogacion.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="No es requerido, pero es una forma rapida de agregar un precio predeterminado."/>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
+        </Property>
+        <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="textPrecio">
@@ -582,22 +603,6 @@
             <EmptyBorder/>
           </Border>
         </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textPrecioKeyTyped"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel13">
-      <Properties>
-        <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/icons/signo-de-interrogacion.png"/>
-        </Property>
-        <Property name="toolTipText" type="java.lang.String" value="No es requerido, pero es una forma rapida de agregar un precio predeterminado."/>
-        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Hand Cursor"/>
-        </Property>
-        <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
     </Component>
   </SubComponents>
