@@ -125,8 +125,7 @@ public class RolesForm extends javax.swing.JPanel {
                 try {
                     btnAgregarActionPerformed(evt);
                 } catch (ParseException e) {
-                    log.info("Error roles: {}", e.getMessage() );
-                    JOptionPane.showMessageDialog(null, "Error: \n" + e.getMessage());
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -233,9 +232,9 @@ public class RolesForm extends javax.swing.JPanel {
 
         if (!result.contains(Constants.ERROR)) {
             cleanFieldTextForm();
-            enableButtonForm();
             getAllRoles();
         }
+        isSelectProduct = false;
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
@@ -248,6 +247,7 @@ public class RolesForm extends javax.swing.JPanel {
             enableButtonForm();
             getAllRoles();
         }
+        isSelectProduct = false;
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
@@ -260,11 +260,13 @@ public class RolesForm extends javax.swing.JPanel {
             enableButtonForm();
             getAllRoles();
         }
+        isSelectProduct = false;
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         cleanFieldTextForm();
         enableButtonForm();
+        isSelectProduct = false;
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tableRolesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableRolesMouseClicked
@@ -279,7 +281,7 @@ public class RolesForm extends javax.swing.JPanel {
     }//GEN-LAST:event_tableRolesMouseClicked
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-        this.getAllRoles();
+        getAllRoles();
         cleanFieldTextForm();
         btnActualizar.setEnabled(false);
         btnAgregar.setEnabled(true);
@@ -320,7 +322,6 @@ public class RolesForm extends javax.swing.JPanel {
         textCode.setText(Constants.EMPTY);
         textDesciption.setText(Constants.EMPTY);
         textCode.setFocusable(true);
-        isSelectProduct = false;
     }
 
     private void enableButtonForm() {
@@ -331,7 +332,6 @@ public class RolesForm extends javax.swing.JPanel {
         isSelectProduct = true;
     }
 
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;

@@ -4,12 +4,35 @@
  */
 package presentation.usuarios;
 
+import accessdata.inventario.AccessProduct;
+import accessdata.users.AccessEmployee;
+import entidad.constantes.Constants;
+import entidad.entitys.inventario.Category;
+import entidad.entitys.inventario.Product;
+import entidad.entitys.inventario.Store;
+import entidad.entitys.usuarios.Employee;
+import entidad.entitys.usuarios.Role;
+import lombok.extern.log4j.Log4j2;
+import negocio.users.LogicalEmployee;
+import negocio.users.LogicalRoles;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Objects;
+
 /**
  *
  * @author ivanl
  */
+@Log4j2
 public class EmployeeForm extends javax.swing.JPanel {
 
+    private final LogicalEmployee logicalEmployee = new LogicalEmployee();
+    private final LogicalRoles logicalRoles = new LogicalRoles();
+    private int idEmployee = 0;
+    private boolean isSelectProduct = false;
     /**
      * Creates new form EmployeeForm
      */
@@ -40,7 +63,7 @@ public class EmployeeForm extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         cmbRoles = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableRoles = new javax.swing.JTable();
+        tableEmployee = new javax.swing.JTable();
         btnActualizar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
@@ -84,41 +107,49 @@ public class EmployeeForm extends javax.swing.JPanel {
 
         jLabel7.setText("Lista de roles");
 
-        cmbRoles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbRoles.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-        tableRoles.setModel(new javax.swing.table.DefaultTableModel(
+        tableEmployee.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "id", "Nombre", "Direccion", "Celular", "Contraseña", "Usuario"
+                "id", "Nombre", "Direccion", "Celular", "Contraseña", "Usuario", "Identificacion", "idRole"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
-        });
-        tableRoles.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableRolesMouseClicked(evt);
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tableRoles);
-        if (tableRoles.getColumnModel().getColumnCount() > 0) {
-            tableRoles.getColumnModel().getColumn(0).setMinWidth(0);
-            tableRoles.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableRoles.getColumnModel().getColumn(1).setResizable(false);
-            tableRoles.getColumnModel().getColumn(2).setMinWidth(0);
-            tableRoles.getColumnModel().getColumn(2).setMaxWidth(0);
-            tableRoles.getColumnModel().getColumn(3).setMinWidth(0);
-            tableRoles.getColumnModel().getColumn(3).setMaxWidth(0);
-            tableRoles.getColumnModel().getColumn(4).setMinWidth(0);
-            tableRoles.getColumnModel().getColumn(4).setMaxWidth(0);
+        tableEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableEmployeeMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableEmployee);
+        if (tableEmployee.getColumnModel().getColumnCount() > 0) {
+            tableEmployee.getColumnModel().getColumn(0).setMinWidth(0);
+            tableEmployee.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableEmployee.getColumnModel().getColumn(1).setResizable(false);
+            tableEmployee.getColumnModel().getColumn(2).setMinWidth(0);
+            tableEmployee.getColumnModel().getColumn(2).setMaxWidth(0);
+            tableEmployee.getColumnModel().getColumn(3).setMinWidth(0);
+            tableEmployee.getColumnModel().getColumn(3).setMaxWidth(0);
+            tableEmployee.getColumnModel().getColumn(4).setMinWidth(0);
+            tableEmployee.getColumnModel().getColumn(4).setMaxWidth(0);
+            tableEmployee.getColumnModel().getColumn(7).setMinWidth(0);
+            tableEmployee.getColumnModel().getColumn(7).setMaxWidth(0);
         }
 
         btnActualizar.setBackground(new java.awt.Color(153, 153, 255));
@@ -128,7 +159,11 @@ public class EmployeeForm extends javax.swing.JPanel {
         btnActualizar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
+                try {
+                    btnActualizarActionPerformed(evt);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -139,7 +174,11 @@ public class EmployeeForm extends javax.swing.JPanel {
         btnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarActionPerformed(evt);
+                try {
+                    btnAgregarActionPerformed(evt);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -252,48 +291,160 @@ public class EmployeeForm extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        // TODO add your handling code here:
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnAgregarActionPerformed
+        String result = logicalEmployee.callAddEmployee(getFieldData());
+        log.info("Resultado Producto Save: {}", result );
+        JOptionPane.showMessageDialog(null, result);
+
+        if (!result.contains(Constants.ERROR)) {
+            cleanFieldTextForm();
+            enableButtonForm();
+            getAllEmployee();
+        }
+        isSelectProduct = false;
     }//GEN-LAST:event_btnAgregarActionPerformed
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) throws ParseException {//GEN-FIRST:event_btnActualizarActionPerformed
+        String result = logicalEmployee.callUpdateEmployee(getFieldData());
+        log.info("Resultado Producto Update: {}", result );
+        JOptionPane.showMessageDialog(null, result);
+
+        if (!result.contains(Constants.ERROR)) {
+            cleanFieldTextForm();
+            enableButtonForm();
+            getAllEmployee();
+        }
+        isSelectProduct = false;
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        String result = logicalEmployee.callDeleteEmployee(idEmployee);
+        JOptionPane.showMessageDialog(null, result);
+        cleanFieldTextForm();
+        enableButtonForm();
+        getAllEmployee();
+        isSelectProduct = false;
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        cleanFieldTextForm();
+        enableButtonForm();
+        isSelectProduct = false;
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void tableRolesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableRolesMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tableRolesMouseClicked
+    private void tableEmployeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableEmployeeMouseClicked
+        DefaultTableModel defaultTableModel = (DefaultTableModel)tableEmployee.getModel();
+        int indexSelect = tableEmployee.getSelectedRow();
+
+        idEmployee = Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 0).toString());
+        textNombre.setText(defaultTableModel.getValueAt(indexSelect, 1).toString());
+        textDireccion.setText(defaultTableModel.getValueAt(indexSelect, 2).toString());
+        textCelular.setText(defaultTableModel.getValueAt(indexSelect, 3).toString());
+        textContrasena.setText(defaultTableModel.getValueAt(indexSelect, 4).toString());
+        textUsuario.setText(defaultTableModel.getValueAt(indexSelect, 5).toString());
+        textIdentificacion.setText(defaultTableModel.getValueAt(indexSelect, 6).toString());
+
+        cmbRoles.setSelectedItem(new
+                Role(Integer.parseInt(defaultTableModel.getValueAt(indexSelect, 7).toString())));
+
+        if (!isSelectProduct) enableButtonForm();
+    }//GEN-LAST:event_tableEmployeeMouseClicked
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-        // TODO add your handling code here:
+        getAllEmployee();
+        callRoles();
+        btnAgregar.setEnabled(true);
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnCancelar.setVisible(false);
     }//GEN-LAST:event_formAncestorAdded
 
+    private void getAllEmployee() {
+        SwingUtilities.invokeLater(() -> {
+            List<Employee> employeeList = logicalEmployee.callFindAllEmployess();
+            DefaultTableModel defaultTableModel = (DefaultTableModel)tableEmployee.getModel();
+            defaultTableModel.setRowCount(0);
+
+            for (Employee employee : employeeList) {
+                defaultTableModel.addRow(new Object[] {
+                    employee.getIdEmployee(),
+                    employee.getNameEmployee(),
+                    employee.getAddressEmployee(),
+                    employee.getPhoneNumberEmployee(),
+                    employee.getPasswordEmployee(),
+                    employee.getUserEmployee(),
+                    employee.getIdentification(),
+                    employee.getFkRoleEmployee()
+                });
+            }
+        });
+    }
+
+    private Employee getFieldData() {
+        return Employee.builder()
+            .idEmployee(idEmployee)
+            .addressEmployee(textDireccion.getText())
+            .phoneNumberEmployee(textCelular.getText())
+            .passwordEmployee(textContrasena.getText())
+            .userEmployee(textUsuario.getText())
+            .nameEmployee(textNombre.getText())
+            .fkRoleEmployee(cmbRoles.getItemAt(cmbRoles.getSelectedIndex()).getIdRole())
+            .identification(textIdentificacion.getText())
+            .build();
+    }
+
+    private void callRoles() {
+        try {
+            List<Role> roleList = logicalRoles.findAllRole();
+
+            for (Role role : roleList) {
+                cmbRoles.addItem(new Role(
+                        role.getIdRole(),
+                        role.getCode(),
+                        role.getDescription()
+                ));
+            }
+        } catch (ParseException e) {
+            log.error("Error: {}", e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar los datos: " + e.getMessage());
+        }
+    }
+
+    private void cleanFieldTextForm() {
+        textCelular.setText(Constants.EMPTY);
+        textContrasena.setText(Constants.EMPTY);
+        textDireccion.setText(Constants.EMPTY);
+        textUsuario.setText(Constants.EMPTY);
+        textIdentificacion.setText(Constants.EMPTY);
+        textNombre.setText(Constants.EMPTY);
+        textNombre.setFocusable(true);
+    }
+
+    private void enableButtonForm() {
+        btnActualizar.setEnabled(!btnActualizar.isEnabled());
+        btnAgregar.setEnabled(!btnAgregar.isEnabled());
+        btnEliminar.setEnabled(!btnEliminar.isEnabled());
+        btnCancelar.setVisible(!btnCancelar.isVisible());
+        isSelectProduct = true;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JComboBox<String> cmbRoles;
+    private javax.swing.JComboBox<Role> cmbRoles;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -303,7 +454,7 @@ public class EmployeeForm extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tableRoles;
+    private javax.swing.JTable tableEmployee;
     private javax.swing.JTextField textCelular;
     private javax.swing.JTextField textContrasena;
     private javax.swing.JTextField textDireccion;

@@ -1,6 +1,7 @@
 package accessdata.users;
 
 import accessdata.utils.UtilsSql;
+import accessdata.utils.UtilsValidateCodeError;
 import entidad.constantes.ConstantLogger;
 import entidad.constantes.Constants;
 import entidad.constantes.sqlconstant.SqlConstant;
@@ -8,6 +9,7 @@ import entidad.entitys.usuarios.Customers;
 import lombok.extern.log4j.Log4j2;
 import accessdata.configurations.ConfigurationDb;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +55,9 @@ public class AccessCustomers {
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -79,42 +83,39 @@ public class AccessCustomers {
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_UPDATE, SqlConstant.CUSTOMERS);
                 result = SqlConstant.SUCCESS_PROCESS;
-            } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_UPDATE, Constants.ONE_NEG);
-                result = SqlConstant.ERROR_PROCESS;
             }
             stmt.close();
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
         return result;
     }
 
-    public String callDeleteCustomer(Customers customers) {
+    public String callDeleteCustomer(int idCustomer) {
         try (Connection conn = ConfigurationDb.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UtilsSql.queryDetele(SqlConstant.CUSTOMERS, abbreviation)
-                    + String.format(SqlConstant.WHERE,
-                                     abbreviation, NAME_FIELDS[0],
-                                     SqlConstant.VALUE))) {
+                    + String.format(SqlConstant.WHERE, abbreviation, NAME_FIELDS[0], SqlConstant.VALUE))) {
 
-            stmt.setInt(1, customers.getIdCustomers());
+            stmt.setInt(1, idCustomer);
 
             if (stmt.executeUpdate() > Constants.ZERO) {
                 log.info(ConstantLogger.LOG_SUCCESS_QUERY_DELETE, SqlConstant.CUSTOMERS);
                 result = SqlConstant.SUCCESS_PROCESS;
-            } else {
-                log.info(ConstantLogger.LOG_ERROR_QUERY_DELETE, Constants.ONE_NEG);
-                result = SqlConstant.ERROR_PROCESS;
             }
+
             stmt.close();
             ConfigurationDb.closeConnection();
 
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
         }
 
@@ -156,8 +157,11 @@ public class AccessCustomers {
                 log.error(ConstantLogger.LOG_SUCCESS_QUERY_FIND_ID, customerSearch.getIdCustomers());
             }
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
             result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
 
         return customerSearch;
@@ -174,19 +178,23 @@ public class AccessCustomers {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Customers customers = Customers.builder()
-                        .idCustomers(rs.getInt(1))
-                        .name(rs.getString(2))
-                        .address(rs.getString(3))
-                        .phone(rs.getString(4))
-                        .typeDocument(rs.getString(5))
-                        .numberDocument(rs.getString(6))
-                        .build();
+                    .idCustomers(rs.getInt(1))
+                    .name(rs.getString(2))
+                    .address(rs.getString(3))
+                    .phone(rs.getString(4))
+                    .typeDocument(rs.getString(5))
+                    .numberDocument(rs.getString(6))
+                    .build();
                 customersList.add(customers);
             }
             stmt.close();
             rs.close();
         } catch (SQLException e) {
-            log.info(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_EXECUTE_SQL, e.getMessage());
+            log.error(ConstantLogger.LOG_ERROR_STATE_SQL, e.getSQLState());
+            result = result.concat(UtilsValidateCodeError.validateMessageError(e.getSQLState()));
+            result = result.concat(e.getMessage());
+            JOptionPane.showMessageDialog(null, result);
         }
         return customersList;
     }

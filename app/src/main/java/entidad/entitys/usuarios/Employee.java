@@ -27,4 +27,5 @@ public class Employee {
     private String passwordEmployee;
     private String userEmployee;
     private Integer fkRoleEmployee;
+    private String identification;
 }

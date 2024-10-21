@@ -462,8 +462,9 @@ public class ProductForm extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        enableButtonForm();
         cleanFieldTextForm();
+        enableButtonForm();
+        isSelectProduct = false;
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tableProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProductMouseClicked
@@ -494,7 +495,6 @@ public class ProductForm extends javax.swing.JPanel {
     }//GEN-LAST:event_textNombreKeyReleased
 
     private void spinnerCantidadStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnerCantidadStateChanged
-       log.info("Evento");
     }//GEN-LAST:event_spinnerCantidadStateChanged
 
 
@@ -631,7 +631,6 @@ public class ProductForm extends javax.swing.JPanel {
         textCodeProduct.setText(Constants.EMPTY);
         textPrecio.setText(Constants.EMPTY);
         textDescripcion.setText(Constants.EMPTY);
-        isSelectProduct = false;
         textPrecio.setEnabled(true);
     }
 
