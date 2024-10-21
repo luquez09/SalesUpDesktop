@@ -1,25 +1,19 @@
 package presentation.inventario;
 
-import accessdata.utils.UtilsValidateFields;
 import entidad.constantes.Constants;
-import entidad.entitys.inventario.Category;
 import entidad.entitys.inventario.ListPrice;
 import entidad.entitys.inventario.Product;
 import lombok.extern.log4j.Log4j2;
 import negocio.inventario.LogicalListPrice;
 import negocio.inventario.LogicalProduct;
 import negocio.utils.UtilsDate;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *

@@ -12,37 +12,52 @@ import javax.swing.*;
 import lombok.extern.log4j.Log4j2;
 import presentation.inventario.CategoryFrom;
 import presentation.inventario.ProductForm;
+import presentation.usuarios.ClienteForm;
+import presentation.usuarios.EmployeeForm;
+import presentation.usuarios.RolesForm;
 
 /**
  * @author IvanLuquez
  * @since 05/10/2024
  */
 @Log4j2
-public class PaneInit extends JFrame {
+public class PanelGenerateMenu extends JFrame {
 
     /**
-     * Creates new form PaneInit
+     * Creates new form PanelGenerateMenu
      */
-    public PaneInit() {
+    public PanelGenerateMenu() {
         initComponents();
         menu1.setEvent(new MenuEvent() {
             @Override
             public void selected(int index, int subIndex) {
                 log.info(body.getSize());
 
-                if (index == 1) {
-                    switch (subIndex) {
-                        case 1 -> showForm(new CategoryFrom());
-                        case 2 -> showForm(new SupplierFrom());
-                        case 3 -> showForm(new ListPriceForm());
-                        case 4 -> showForm(new ProductForm());
-                        case 5 -> showForm(new StorageForm());
-                    }
-                } else if (index == 5) {
-                    System.exit(0);
+                switch (index) {
+                    case 1 -> getInventario(subIndex);
+                    case 2 -> getUsers(subIndex);
+                    case 5 -> System.exit(0);
                 }
             }
         });
+    }
+
+    private void getInventario(int index) {
+        switch (index) {
+            case 1 -> showForm(new CategoryFrom());
+            case 2 -> showForm(new SupplierFrom());
+            case 3 -> showForm(new ListPriceForm());
+            case 4 -> showForm(new ProductForm());
+            case 5 -> showForm(new StorageForm());
+        }
+    }
+
+    private void getUsers(int index) {
+        switch (index) {
+            case 1 -> showForm(new EmployeeForm());
+            case 2 -> showForm(new ClienteForm());
+            case 3 -> showForm(new RolesForm());
+        }
     }
     
     private void showForm(Component com) {
@@ -129,20 +144,20 @@ public class PaneInit extends JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelGenerateMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelGenerateMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelGenerateMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PaneInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelGenerateMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new PaneInit().setVisible(true);
+            new PanelGenerateMenu().setVisible(true);
         });
     }
 

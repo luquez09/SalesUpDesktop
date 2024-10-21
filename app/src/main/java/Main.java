@@ -1,4 +1,4 @@
-import presentation.main.PaneInit;
+import presentation.main.PanelGenerateMenu;
 
 public class Main {
 
@@ -7,6 +7,6 @@ public class Main {
     }
 
     private static void run() {
-        new PaneInit().setVisible(true);
+        new PanelGenerateMenu().setVisible(true);
     }
 }

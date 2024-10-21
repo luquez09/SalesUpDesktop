@@ -606,7 +606,6 @@ public class ProductForm extends javax.swing.JPanel {
                 defaultTableModel.setRowCount(0);
 
                 for (Product product : listPricesResult) {
-                    log.info(product.getName());
                     defaultTableModel.addRow(new Object[] {
                         product.getIdProduct(),
                         product.getName(),
